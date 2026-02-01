@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import SplashScreen from './components/SplashScreen';
 import LoginPage from './components/LoginPage';
 import HomeScreen from './components/HomeScreen';
@@ -6,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState('splash');
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +56,7 @@ function App() {
   };
 
   if (isLoading) {
-    return <div className="loading-screen">Loading...</div>;
+    return <div className="loading-screen">{t('app.tagline')}</div>;
   }
 
   return (

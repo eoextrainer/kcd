@@ -1,30 +1,32 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './ThemeSelector.css';
 
 const THEMES = [
   {
-    id: 'netflix',
-    label: 'Netflix',
-    description: 'Dark cinematic experience',
+    id: 'clear-sky',
+    labelKey: 'themes.clearSky',
+    descriptionKey: 'themes.clearSkyDesc',
   },
   {
-    id: 'disney',
-    label: 'Disney+',
-    description: 'Family-friendly blue glow',
+    id: 'night-shade',
+    labelKey: 'themes.nightShade',
+    descriptionKey: 'themes.nightShadeDesc',
   },
   {
-    id: 'google-play',
-    label: 'Google Play',
-    description: 'Clean and vibrant',
+    id: 'corporate',
+    labelKey: 'themes.corporate',
+    descriptionKey: 'themes.corporateDesc',
   },
   {
-    id: 'salesforce',
-    label: 'Salesforce',
-    description: 'Enterprise cloud style',
+    id: 'techie',
+    labelKey: 'themes.techie',
+    descriptionKey: 'themes.techieDesc',
   },
 ];
 
 export default function ThemeSelector({ currentTheme, onThemeChange }) {
+  const { t } = useTranslation();
   return (
     <div className="theme-selector">
       {THEMES.map((theme) => (
@@ -36,8 +38,8 @@ export default function ThemeSelector({ currentTheme, onThemeChange }) {
         >
           <div className={`theme-swatch theme-${theme.id}`} />
           <div className="theme-info">
-            <h5>{theme.label}</h5>
-            <p>{theme.description}</p>
+            <h5>{t(theme.labelKey)}</h5>
+            <p>{t(theme.descriptionKey)}</p>
           </div>
         </button>
       ))}

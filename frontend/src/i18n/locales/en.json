@@ -1,0 +1,210 @@
+{
+  "app": {
+    "title": "KCD — La mode à votre portée",
+    "tagline": "Discover Creative Excellence"
+  },
+  "splash": {
+    "skip": "Skip"
+  },
+  "home": {
+    "title": "Welcome to KCD",
+    "subtitle": "Discover Creative Excellence",
+    "cta": "Get Started",
+    "login": "Sign In",
+    "discover": "Discover Creative Excellence",
+    "getStarted": "Get Started"
+  },
+  "login": {
+    "title": "Sign In",
+    "tagline": "Experience Excellence",
+    "email": "Email Address",
+    "password": "Password",
+    "signin": "Sign In",
+    "signin_loading": "Signing in...",
+    "demo": "Try Demo Account",
+    "signup": "Sign up here",
+    "or": "or",
+    "footer": "Don't have an account?",
+    "welcome": "Welcome to KCD",
+    "welcome_subtitle": "Your platform for excellence in digital transformation",
+    "features": {
+      "analytics": "Advanced Analytics",
+      "insights": "Real-time Insights",
+      "security": "Enterprise Security",
+      "access": "Cross-platform Access"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "explore": "Explore",
+    "creators": "Creators",
+    "about": "About",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "themes": {
+    "clearSky": "Clear Sky",
+    "clearSkyDesc": "Inspired by Google Play",
+    "nightShade": "Night Shade",
+    "nightShadeDesc": "Inspired by Netflix",
+    "corporate": "Corporate",
+    "corporateDesc": "Inspired by Salesforce",
+    "techie": "Techie",
+    "techieDesc": "Inspired by GitHub"
+  },
+  "roles": {
+    "admin": "System Administrator",
+    "community_admin": "Community Administrator",
+    "moderator": "Community Moderator",
+    "brand": "Brand Account",
+    "premium": "Premium User",
+    "free": "Free User"
+  },
+  "sections": {
+    "featuredEvents": "Featured Events",
+    "featuredCreators": "Featured Creators",
+    "featuredTalents": "Featured Talents",
+    "welcome": "Welcome to KCD"
+  },
+  "labels": {
+    "specializing": "Specializing in Fashion & Design",
+    "event": "Event",
+    "creator": "Creator",
+    "talent": "Talent"
+  },
+  "cta": {
+    "getStarted": "Get Started",
+    "login": "Sign In"
+  },
+  "errors": {
+    "networkError": "Network error. Please check your connection.",
+    "invalidCredentials": "Invalid email or password",
+    "loginFailed": "Login failed. Please try again."
+  },
+  "analytics": {
+    "title": "Analytics & Insights"
+  },
+  "stats": {
+    "activeUsers": "Active Users",
+    "activeUsersChange": "↑ 12% this month",
+    "projects": "Projects",
+    "projectsChange": "↑ 3% this month",
+    "uptime": "Uptime",
+    "uptimeStatus": "Excellent",
+    "userRating": "User Rating"
+  },
+  "settings": {
+    "title": "Account Settings",
+    "themeSelector": "Theme Selector",
+    "themeSelectorDesc": "Choose your preferred workspace theme",
+    "profile": "Profile Information",
+    "name": "Name",
+    "role": "Role",
+    "editProfile": "Edit Profile",
+    "security": "Security Settings",
+    "password": "Password",
+    "passwordHint": "Last changed 3 months ago",
+    "mfa": "Two-Factor Authentication",
+    "mfaStatus": "Not enabled",
+    "updateSecurity": "Update Security",
+    "preferences": "Preferences",
+    "theme": "Theme",
+    "themeDefault": "Dark Mode",
+    "notifications": "Notifications",
+    "notificationsStatus": "Enabled",
+    "managePreferences": "Manage Preferences",
+    "dangerZone": "Danger Zone",
+    "dangerDesc": "Irreversible actions",
+    "deleteAccount": "Delete Account"
+  },
+  "admin": {
+    "features": {
+      "privileges": "Platform Control & Privileges",
+      "privileges_desc": "Control the platform and grant user privileges",
+      "platformDashboard": "Platform Performance Dashboard",
+      "platformDashboard_desc": "Monitor performance metrics and uptime",
+      "userManager": "User Manager",
+      "userManager_desc": "Manage user interactions and accounts",
+      "services": "Service Subscription Manager",
+      "services_desc": "Manage all subscribed services",
+      "integrations": "Microservices Integrations",
+      "integrations_desc": "Authorize data exchanges with external services",
+      "aiRequests": "AI Request Intelligence",
+      "aiRequests_desc": "Capture and translate feature requests into AI prompts"
+    }
+  },
+  "community": {
+    "features": {
+      "dashboard": "Community Dashboard",
+      "dashboard_desc": "Oversee community interactions",
+      "subscriptions": "Subscription Management",
+      "subscriptions_desc": "Manage each user's subscription",
+      "marketing": "Marketing Campaigns",
+      "marketing_desc": "Plan and monitor digital marketing campaigns",
+      "vetting": "Request Vetting",
+      "vetting_desc": "Vet each user feature/service request"
+    }
+  },
+  "moderator": {
+    "features": {
+      "journey": "Community Highlights Dashboard",
+      "journey_desc": "Track user engagement and experience",
+      "opportunities": "Opportunity Tracker",
+      "opportunities_desc": "Poll and track upcoming service opportunities",
+      "issues": "Issue Tracker",
+      "issues_desc": "Track pending user issues",
+      "qa": "Q&A Moderation",
+      "qa_desc": "Moderate platform feedback, complaints, requests",
+      "impersonate": "Impersonation Tool",
+      "impersonate_desc": "Review user experiences without admin access"
+    }
+  },
+  "brand": {
+    "features": {
+      "showcase": "Brand Showcase",
+      "showcase_desc": "Highlight brand content and campaigns",
+      "partnerships": "Partnership Hub",
+      "partnerships_desc": "Manage collaborations and co-branding",
+      "analytics": "Brand Analytics",
+      "analytics_desc": "Track brand performance and audience reach"
+    }
+  },
+  "premium": {
+    "features": {
+      "highlights": "Premium Highlights",
+      "highlights_desc": "Consume tailored platform highlights",
+      "topFive": "Top 5 Favorites",
+      "topFive_desc": "Access your top 5 modules and subscriptions",
+      "modules": "Premium Modules",
+      "modules_desc": "Engage with premium subscription modules",
+      "subscriptions": "Subscription Manager",
+      "subscriptions_desc": "Manage your active services",
+      "chatbox": "Member Chatbox",
+      "chatbox_desc": "Interact with other members",
+      "aiPrompt": "AI Feature Prompt",
+      "aiPrompt_desc": "Request new features routed for vetting"
+    }
+  },
+  "free": {
+    "features": {
+      "limited": "Limited Access",
+      "limited_desc": "Access selected modules on a time-limited basis"
+    }
+  },
+  "dashboard": {
+    "title": "KCD Platform",
+    "welcome": "Welcome",
+    "subtitle": "Experience Excellence in Digital Transformation",
+    "workspaces": "Workspaces",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "workspace": "Your Workspace",
+    "newWorkspace": "+ New Workspace",
+    "role": "Role",
+    "theme": "Theme",
+    "widgets": "Widgets",
+    "signOut": "Sign Out"
+  }
+}

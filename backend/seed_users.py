@@ -93,14 +93,6 @@ USERS_DATA = [
         "is_verified": True,
         "subscription_tier": "free",
     },
-    {
-        "email": "guest@kcd-agency.com",
-        "password": "guest123",
-        "full_name": "Guest User",
-        "role": "guest",
-        "is_active": True,
-        "is_verified": False,
-    },
 ]
 
 WORKSPACE_TEMPLATES = {
@@ -182,15 +174,6 @@ WORKSPACE_TEMPLATES = {
         ],
         "theme": "netflix",
     },
-    "guest": {
-        "name": "Guest Access",
-        "description": "Limited access to platform features",
-        "widgets": [
-            "home_feed",
-            "community_feed",
-        ],
-        "theme": "netflix",
-    },
 }
 
 def seed_database():
@@ -225,6 +208,14 @@ def seed_database():
     skipped_count = 0
     
     try:
+        # Remove deprecated guest user if present
+        guest = db.query(User).filter(User.email == "guest@kcd-agency.com").first()
+        if guest:
+            db.query(Workspace).filter(Workspace.user_email == "guest@kcd-agency.com").delete()
+            db.delete(guest)
+            db.commit()
+            print("⊘ Removed guest user account")
+
         # Seed users
         print("\nSeeding users...")
         for user_data in USERS_DATA:

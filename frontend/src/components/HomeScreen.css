@@ -396,3 +396,131 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* === KCD 2026 Hero Video Layout Overrides === */
+.home-screen {
+  background: #0b0b0f;
+  color: #f4f4f6;
+}
+
+.home-nav {
+  background: rgba(10, 10, 15, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nav-brand h1 {
+  background: none;
+  -webkit-text-fill-color: #fff;
+  color: #fff;
+  letter-spacing: 0.2rem;
+}
+
+.nav-brand p {
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.2rem;
+}
+
+.nav-menu a {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-menu a:hover {
+  color: #fff;
+  border-bottom-color: transparent;
+}
+
+.nav-login-btn {
+  background: rgba(255, 255, 255, 0.95);
+  color: #111;
+}
+
+.hero-section {
+  padding-top: 80px;
+  background: #0b0b0f;
+}
+
+.hero-background {
+  display: none;
+}
+
+.hero-video-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.75) 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+}
+
+.cta-button {
+  background: rgba(255, 255, 255, 0.95);
+  color: #111;
+}
+
+.featured-section {
+  padding: 5rem 8vw 2rem;
+}
+
+.tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.video-tile {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.video-frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.tile-video {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.tile-caption {
+  padding: 1.2rem 1.4rem 1.6rem;
+}
+
+.tile-caption h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.1rem;
+}
+
+.tile-caption p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.home-footer {
+  padding: 3rem 8vw 4rem;
+  color: rgba(255, 255, 255, 0.5);
+}

@@ -36,20 +36,20 @@
   flex-shrink: 0;
 }
 
-.theme-swatch.theme-netflix {
-  background: linear-gradient(135deg, #141414 0%, #e50914 100%);
-}
-
-.theme-swatch.theme-disney {
-  background: linear-gradient(135deg, #0e4ed0 0%, #66d9ff 100%);
-}
-
-.theme-swatch.theme-google-play {
+.theme-swatch.theme-clear-sky {
   background: linear-gradient(135deg, #34a853 0%, #4285f4 50%, #ea4335 100%);
 }
 
-.theme-swatch.theme-salesforce {
+.theme-swatch.theme-night-shade {
+  background: linear-gradient(135deg, #141414 0%, #e50914 100%);
+}
+
+.theme-swatch.theme-corporate {
   background: linear-gradient(135deg, #00a1e0 0%, #0e3a53 100%);
+}
+
+.theme-swatch.theme-techie {
+  background: linear-gradient(135deg, #0d1117 0%, #6e7681 100%);
 }
 
 .theme-info h5 {

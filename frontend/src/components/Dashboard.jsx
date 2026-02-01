@@ -1,13 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import ThemeSelector from './ThemeSelector';
 import './Dashboard.css';
+import { getApiBaseUrl } from '../config/api';
 
 export default function Dashboard({ user, onLogout }) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('workspaces');
   const [userData, setUserData] = useState(user);
   const [workspace, setWorkspace] = useState(null);
-  const [theme, setTheme] = useState('netflix');
+  const [theme, setTheme] = useState('night-shade');
   const [loading, setLoading] = useState(false);
+  const apiBaseUrl = getApiBaseUrl();
+
+  const roleThemeMap = useMemo(() => ({
+    admin: 'corporate',
+    community_admin: 'corporate',
+    moderator: 'clear-sky',
+    brand: 'disney',
+    premium: 'night-shade',
+    free: 'night-shade',
+  }), []);
+
+  const normalizeTheme = (value) => {
+    const mapping = {
+      netflix: 'night-shade',
+      'google-play': 'clear-sky',
+      salesforce: 'corporate',
+      disney: 'disney',
+    };
+    return mapping[value] || value;
+  };
+  const effectiveRole = userData?.role === 'user'
+    ? (userData?.subscription_tier || 'free')
+    : (userData?.role || 'free');
+
+  const featureMap = useMemo(() => ({
+    admin: [
+      { titleKey: 'admin.features.privileges', descKey: 'admin.features.privileges_desc' },
+      { titleKey: 'admin.features.platformDashboard', descKey: 'admin.features.platformDashboard_desc' },
+      { titleKey: 'admin.features.userManager', descKey: 'admin.features.userManager_desc' },
+      { titleKey: 'admin.features.services', descKey: 'admin.features.services_desc' },
+      { titleKey: 'admin.features.integrations', descKey: 'admin.features.integrations_desc' },
+      { titleKey: 'admin.features.aiRequests', descKey: 'admin.features.aiRequests_desc' },
+    ],
+    community_admin: [
+      { titleKey: 'community.features.dashboard', descKey: 'community.features.dashboard_desc' },
+      { titleKey: 'community.features.subscriptions', descKey: 'community.features.subscriptions_desc' },
+      { titleKey: 'community.features.marketing', descKey: 'community.features.marketing_desc' },
+      { titleKey: 'community.features.vetting', descKey: 'community.features.vetting_desc' },
+    ],
+    moderator: [
+      { titleKey: 'moderator.features.journey', descKey: 'moderator.features.journey_desc' },
+      { titleKey: 'moderator.features.opportunities', descKey: 'moderator.features.opportunities_desc' },
+      { titleKey: 'moderator.features.issues', descKey: 'moderator.features.issues_desc' },
+      { titleKey: 'moderator.features.qa', descKey: 'moderator.features.qa_desc' },
+      { titleKey: 'moderator.features.impersonate', descKey: 'moderator.features.impersonate_desc' },
+    ],
+    brand: [
+      { titleKey: 'brand.features.showcase', descKey: 'brand.features.showcase_desc' },
+      { titleKey: 'brand.features.partnerships', descKey: 'brand.features.partnerships_desc' },
+      { titleKey: 'brand.features.analytics', descKey: 'brand.features.analytics_desc' },
+    ],
+    premium: [
+      { titleKey: 'premium.features.highlights', descKey: 'premium.features.highlights_desc' },
+      { titleKey: 'premium.features.topFive', descKey: 'premium.features.topFive_desc' },
+      { titleKey: 'premium.features.modules', descKey: 'premium.features.modules_desc' },
+      { titleKey: 'premium.features.subscriptions', descKey: 'premium.features.subscriptions_desc' },
+      { titleKey: 'premium.features.chatbox', descKey: 'premium.features.chatbox_desc' },
+      { titleKey: 'premium.features.aiPrompt', descKey: 'premium.features.aiPrompt_desc' },
+    ],
+    free: [
+      { titleKey: 'free.features.limited', descKey: 'free.features.limited_desc' },
+    ],
+  }), []);
 
   useEffect(() => {
     fetchUserData();
@@ -15,12 +81,20 @@ export default function Dashboard({ user, onLogout }) {
   }, []);
 
   useEffect(() => {
+    if (!workspace && userData) {
+      const roleDefault = roleThemeMap[effectiveRole] || 'night-shade';
+      setTheme(localStorage.getItem('theme') || roleDefault);
+    }
+  }, [effectiveRole, roleThemeMap, userData, workspace]);
+
+  useEffect(() => {
     const body = document.body;
     body.classList.remove(
-      'theme-netflix',
-      'theme-disney',
-      'theme-google-play',
-      'theme-salesforce'
+      'theme-clear-sky',
+      'theme-night-shade',
+      'theme-corporate',
+      'theme-techie',
+      'theme-disney'
     );
     if (theme) {
       body.classList.add(`theme-${theme}`);
@@ -32,7 +106,7 @@ export default function Dashboard({ user, onLogout }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/users/me`, {
+      const response = await fetch(`${apiBaseUrl}/v1/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +127,7 @@ export default function Dashboard({ user, onLogout }) {
   const fetchWorkspace = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/workspaces/me`, {
+      const response = await fetch(`${apiBaseUrl}/v1/workspaces/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,7 +136,10 @@ export default function Dashboard({ user, onLogout }) {
       if (response.ok) {
         const data = await response.json();
         setWorkspace(data);
-        setTheme(data.theme || localStorage.getItem('theme') || 'netflix');
+        const rawRole = data.role === 'user' ? (data.subscription_tier || 'free') : data.role;
+        const roleDefault = roleThemeMap[rawRole] || 'night-shade';
+        const normalized = normalizeTheme(data.theme);
+        setTheme(normalized || localStorage.getItem('theme') || roleDefault);
       }
     } catch (err) {
       console.error('Failed to fetch workspace:', err);
@@ -73,7 +150,7 @@ export default function Dashboard({ user, onLogout }) {
     setTheme(nextTheme);
     try {
       const token = localStorage.getItem('token');
-      await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/workspaces/me`, {
+      await fetch(`${apiBaseUrl}/v1/workspaces/me`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -106,15 +183,15 @@ export default function Dashboard({ user, onLogout }) {
         </video>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-title">Welcome, {userData?.full_name || 'User'}!</h1>
-          <p className="hero-subtitle">Experience Excellence in Digital Transformation</p>
+          <h1 className="hero-title">{t('dashboard.welcome')}, {userData?.full_name || 'Utilisateur'}!</h1>
+          <p className="hero-subtitle">{t('dashboard.subtitle')}</p>
         </div>
       </div>
 
       <div className="dashboard-header">
         <div className="header-left">
-          <h2 className="dashboard-title">KCD Platform</h2>
-          <p className="user-role">{userData?.role?.toUpperCase() || 'USER'}</p>
+          <h2 className="dashboard-title">{t('dashboard.title')}</h2>
+          <p className="user-role">{t(`roles.${effectiveRole}`)}</p>
         </div>
         <div className="header-right">
           <button className="icon-button notification-btn">
@@ -123,7 +200,7 @@ export default function Dashboard({ user, onLogout }) {
           </button>
           <button className="icon-button settings-btn">⚙️</button>
           <button className="logout-button" onClick={handleLogout}>
-            Sign Out
+            {t('dashboard.signOut')}
           </button>
         </div>
       </div>
@@ -134,19 +211,19 @@ export default function Dashboard({ user, onLogout }) {
             className={`nav-tab ${activeTab === 'workspaces' ? 'active' : ''}`}
             onClick={() => setActiveTab('workspaces')}
           >
-            🎯 Workspaces
+            🎯 {t('dashboard.workspaces')}
           </button>
           <button
             className={`nav-tab ${activeTab === 'analytics' ? 'active' : ''}`}
             onClick={() => setActiveTab('analytics')}
           >
-            📊 Analytics
+            📊 {t('dashboard.analytics')}
           </button>
           <button
             className={`nav-tab ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
-            ⚙️ Settings
+            ⚙️ {t('dashboard.settings')}
           </button>
         </nav>
       </div>
@@ -156,92 +233,37 @@ export default function Dashboard({ user, onLogout }) {
           <div className="workspaces-section">
             <div className="section-header">
               <div>
-                <h3>Your Workspace</h3>
-                <p className="workspace-subtitle">{workspace?.workspace_name || 'Personalized Workspace'}</p>
+                <h3>{t('dashboard.workspace')}</h3>
+                <p className="workspace-subtitle">{workspace?.workspace_name || t('dashboard.workspace')}</p>
               </div>
-              <button className="create-button">+ New Workspace</button>
+              <button className="create-button">{t('dashboard.newWorkspace')}</button>
             </div>
 
             {workspace && (
               <div className="workspace-summary">
                 <div className="workspace-meta">
-                  <span className="meta-label">Role</span>
-                  <span className="meta-value">{workspace.role}</span>
+                  <span className="meta-label">{t('dashboard.role')}</span>
+                  <span className="meta-value">{t(`roles.${effectiveRole}`)}</span>
                 </div>
                 <div className="workspace-meta">
-                  <span className="meta-label">Theme</span>
+                  <span className="meta-label">{t('dashboard.theme')}</span>
                   <span className="meta-value">{workspace.theme}</span>
                 </div>
                 <div className="workspace-meta">
-                  <span className="meta-label">Widgets</span>
+                  <span className="meta-label">{t('dashboard.widgets')}</span>
                   <span className="meta-value">{workspace.widgets?.length || 0}</span>
                 </div>
               </div>
             )}
-
             <div className="workspaces-grid">
-              {userData?.role === 'admin' && (
-                <>
-                  <div className="workspace-card admin-card">
-                    <div className="card-icon">👥</div>
-                    <h4>User Management</h4>
-                    <p>Manage platform users and roles</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                  <div className="workspace-card admin-card">
-                    <div className="card-icon">📈</div>
-                    <h4>System Analytics</h4>
-                    <p>View system performance metrics</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                  <div className="workspace-card admin-card">
-                    <div className="card-icon">🔒</div>
-                    <h4>Security Control</h4>
-                    <p>Manage security settings</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                </>
-              )}
-
-              {userData?.role === 'moderator' && (
-                <>
-                  <div className="workspace-card moderator-card">
-                    <div className="card-icon">✓</div>
-                    <h4>Content Moderation</h4>
-                    <p>Review and approve submissions</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                  <div className="workspace-card moderator-card">
-                    <div className="card-icon">📋</div>
-                    <h4>Reports</h4>
-                    <p>View activity reports</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                </>
-              )}
-
-              {userData?.role === 'user' && (
-                <>
-                  <div className="workspace-card user-card">
-                    <div className="card-icon">📝</div>
-                    <h4>My Projects</h4>
-                    <p>Create and manage projects</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                  <div className="workspace-card user-card">
-                    <div className="card-icon">👥</div>
-                    <h4>Collaboration</h4>
-                    <p>Work with team members</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                  <div className="workspace-card user-card">
-                    <div className="card-icon">📚</div>
-                    <h4>Resources</h4>
-                    <p>Access learning materials</p>
-                    <button className="card-button">Access</button>
-                  </div>
-                </>
-              )}
+              {(featureMap[effectiveRole] || []).map((feature) => (
+                <div key={feature.titleKey} className={`workspace-card ${effectiveRole}-card`}>
+                  <div className="card-icon">✨</div>
+                  <h4>{t(feature.titleKey)}</h4>
+                  <p>{t(feature.descKey)}</p>
+                  <button className="card-button">{t('cta.getStarted')}</button>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -249,29 +271,29 @@ export default function Dashboard({ user, onLogout }) {
         {activeTab === 'analytics' && (
           <div className="analytics-section">
             <div className="section-header">
-              <h3>Analytics & Insights</h3>
+              <h3>{t('analytics.title')}</h3>
             </div>
 
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-number">2,459</div>
-                <div className="stat-label">Active Users</div>
-                <div className="stat-change positive">↑ 12% this month</div>
+                <div className="stat-label">{t('stats.activeUsers')}</div>
+                <div className="stat-change positive">{t('stats.activeUsersChange')}</div>
               </div>
               <div className="stat-card">
                 <div className="stat-number">894</div>
-                <div className="stat-label">Projects</div>
-                <div className="stat-change positive">↑ 3% this month</div>
+                 <div className="stat-label">{t('stats.projects')}</div>
+                 <div className="stat-change positive">{t('stats.projectsChange')}</div>
               </div>
               <div className="stat-card">
                 <div className="stat-number">98.5%</div>
-                <div className="stat-label">Uptime</div>
-                <div className="stat-change neutral">Excellent</div>
+                 <div className="stat-label">{t('stats.uptime')}</div>
+                 <div className="stat-change neutral">{t('stats.uptimeStatus')}</div>
               </div>
               <div className="stat-card">
                 <div className="stat-number">4.9</div>
-                <div className="stat-label">User Rating</div>
-                <div className="stat-change positive">★★★★★</div>
+                 <div className="stat-label">{t('stats.userRating')}</div>
+                 <div className="stat-change positive">★★★★★</div>
               </div>
             </div>
           </div>
@@ -280,67 +302,71 @@ export default function Dashboard({ user, onLogout }) {
         {activeTab === 'settings' && (
           <div className="settings-section">
             <div className="section-header">
-              <h3>Account Settings</h3>
+              <h3>{t('settings.title')}</h3>
             </div>
 
             <div className="settings-card theme-card">
-              <h4>Theme Selector</h4>
-              <p>Choose your preferred workspace theme</p>
+              <h4>{t('settings.themeSelector')}</h4>
+              <p>{t('settings.themeSelectorDesc')}</p>
               <ThemeSelector currentTheme={theme} onThemeChange={handleThemeChange} />
             </div>
 
             <div className="settings-grid">
               <div className="settings-card">
-                <h4>Profile Information</h4>
+                <h4>{t('settings.profile')}</h4>
                 <div className="settings-item">
                   <label>Email</label>
                   <p>{userData?.email || 'N/A'}</p>
                 </div>
                 <div className="settings-item">
-                  <label>Name</label>
+                  <label>{t('settings.name')}</label>
                   <p>{userData?.full_name || 'N/A'}</p>
                 </div>
                 <div className="settings-item">
-                  <label>Role</label>
-                  <p>{userData?.role?.toUpperCase() || 'N/A'}</p>
+                  <label>{t('settings.role')}</label>
+                  <p>{t(`roles.${effectiveRole}`)}</p>
                 </div>
-                <button className="edit-button">Edit Profile</button>
+                <button className="edit-button">{t('settings.editProfile')}</button>
               </div>
 
               <div className="settings-card">
-                <h4>Security Settings</h4>
+                <h4>{t('settings.security')}</h4>
                 <div className="settings-item">
-                  <label>Password</label>
-                  <p>Last changed 3 months ago</p>
+                  <label>{t('settings.password')}</label>
+                  <p>{t('settings.passwordHint')}</p>
                 </div>
                 <div className="settings-item">
-                  <label>Two-Factor Authentication</label>
-                  <p>Not enabled</p>
+                  <label>{t('settings.mfa')}</label>
+                  <p>{t('settings.mfaStatus')}</p>
                 </div>
-                <button className="edit-button">Update Security</button>
+                <button className="edit-button">{t('settings.updateSecurity')}</button>
               </div>
 
               <div className="settings-card">
-                <h4>Preferences</h4>
+                <h4>{t('settings.preferences')}</h4>
                 <div className="settings-item">
-                  <label>Theme</label>
-                  <p>Dark Mode</p>
+                  <label>{t('settings.theme')}</label>
+                  <p>{t('settings.themeDefault')}</p>
                 </div>
                 <div className="settings-item">
-                  <label>Notifications</label>
-                  <p>Enabled</p>
+                  <label>{t('settings.notifications')}</label>
+                  <p>{t('settings.notificationsStatus')}</p>
                 </div>
-                <button className="edit-button">Manage Preferences</button>
+                <button className="edit-button">{t('settings.managePreferences')}</button>
               </div>
 
               <div className="settings-card danger-zone">
-                <h4>Danger Zone</h4>
-                <p>Irreversible actions</p>
-                <button className="delete-button">Delete Account</button>
+                <h4>{t('settings.dangerZone')}</h4>
+                <p>{t('settings.dangerDesc')}</p>
+                <button className="delete-button">{t('settings.deleteAccount')}</button>
               </div>
             </div>
           </div>
         )}
+      </div>
+
+      <div className="theme-selector-bar">
+        <ThemeSelector currentTheme={theme} onThemeChange={handleThemeChange} />
       </div>
     </div>
   );

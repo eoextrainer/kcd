@@ -1,0 +1,210 @@
+{
+  "app": {
+    "title": "KCD — La mode à votre portée",
+    "tagline": "Découvrez l'excellence créative"
+  },
+  "splash": {
+    "skip": "Passer"
+  },
+  "home": {
+    "title": "Bienvenue chez KCD",
+    "subtitle": "Découvrez l'excellence créative",
+    "cta": "Commencer",
+    "login": "Se connecter",
+    "discover": "Découvrez l'excellence créative",
+    "getStarted": "Commencer"
+  },
+  "login": {
+    "title": "Connexion",
+    "tagline": "Vivez l'excellence",
+    "email": "Adresse e‑mail",
+    "password": "Mot de passe",
+    "signin": "Se connecter",
+    "signin_loading": "Connexion...",
+    "demo": "Essayer un compte démo",
+    "signup": "Inscrivez-vous ici",
+    "or": "ou",
+    "footer": "Vous n’avez pas de compte ?",
+    "welcome": "Bienvenue chez KCD",
+    "welcome_subtitle": "Votre plateforme d’excellence pour la transformation digitale",
+    "features": {
+      "analytics": "Analytique avancée",
+      "insights": "Insights en temps réel",
+      "security": "Sécurité entreprise",
+      "access": "Accès multiplateforme"
+    }
+  },
+  "navigation": {
+    "home": "Accueil",
+    "explore": "Explorer",
+    "creators": "Créateurs",
+    "about": "À propos",
+    "dashboard": "Tableau de bord",
+    "logout": "Se déconnecter",
+    "profile": "Profil",
+    "settings": "Paramètres"
+  },
+  "themes": {
+    "clearSky": "Ciel clair",
+    "clearSkyDesc": "Inspiré par Google Play",
+    "nightShade": "Ombre nocturne",
+    "nightShadeDesc": "Inspiré par Netflix",
+    "corporate": "Corporate",
+    "corporateDesc": "Inspiré par Salesforce",
+    "techie": "Techie",
+    "techieDesc": "Inspiré par GitHub"
+  },
+  "roles": {
+    "admin": "Administrateur système",
+    "community_admin": "Administrateur communauté",
+    "moderator": "Modérateur communauté",
+    "brand": "Compte marque",
+    "premium": "Utilisateur premium",
+    "free": "Utilisateur gratuit"
+  },
+  "sections": {
+    "featuredEvents": "Événements en vedette",
+    "featuredCreators": "Créateurs en vedette",
+    "featuredTalents": "Talents en vedette",
+    "welcome": "Bienvenue chez KCD"
+  },
+  "labels": {
+    "specializing": "Spécialisé en mode & design",
+    "event": "Événement",
+    "creator": "Créateur",
+    "talent": "Talent"
+  },
+  "cta": {
+    "getStarted": "Commencer",
+    "login": "Se connecter"
+  },
+  "errors": {
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "invalidCredentials": "Identifiants invalides",
+    "loginFailed": "Échec de la connexion. Veuillez réessayer."
+  },
+  "analytics": {
+    "title": "Analytique & insights"
+  },
+  "stats": {
+    "activeUsers": "Utilisateurs actifs",
+    "activeUsersChange": "↑ 12% ce mois-ci",
+    "projects": "Projets",
+    "projectsChange": "↑ 3% ce mois-ci",
+    "uptime": "Disponibilité",
+    "uptimeStatus": "Excellent",
+    "userRating": "Note utilisateur"
+  },
+  "settings": {
+    "title": "Paramètres du compte",
+    "themeSelector": "Sélecteur de thème",
+    "themeSelectorDesc": "Choisissez votre thème d’espace de travail",
+    "profile": "Informations du profil",
+    "name": "Nom",
+    "role": "Rôle",
+    "editProfile": "Modifier le profil",
+    "security": "Paramètres de sécurité",
+    "password": "Mot de passe",
+    "passwordHint": "Dernière modification il y a 3 mois",
+    "mfa": "Authentification à deux facteurs",
+    "mfaStatus": "Non activée",
+    "updateSecurity": "Mettre à jour la sécurité",
+    "preferences": "Préférences",
+    "theme": "Thème",
+    "themeDefault": "Mode sombre",
+    "notifications": "Notifications",
+    "notificationsStatus": "Activées",
+    "managePreferences": "Gérer les préférences",
+    "dangerZone": "Zone dangereuse",
+    "dangerDesc": "Actions irréversibles",
+    "deleteAccount": "Supprimer le compte"
+  },
+  "admin": {
+    "features": {
+      "privileges": "Contrôle de la plateforme & privilèges",
+      "privileges_desc": "Contrôler la plateforme et accorder des privilèges",
+      "platformDashboard": "Tableau de bord de performance",
+      "platformDashboard_desc": "Suivre les métriques et la disponibilité",
+      "userManager": "Gestionnaire d'utilisateurs",
+      "userManager_desc": "Gérer les interactions et comptes utilisateurs",
+      "services": "Gestion des services abonnés",
+      "services_desc": "Gérer tous les services souscrits",
+      "integrations": "Intégrations microservices",
+      "integrations_desc": "Autoriser les échanges de données externes",
+      "aiRequests": "Intelligence des demandes IA",
+      "aiRequests_desc": "Transformer les demandes en prompts IA"
+    }
+  },
+  "community": {
+    "features": {
+      "dashboard": "Tableau de bord communauté",
+      "dashboard_desc": "Superviser les interactions des utilisateurs",
+      "subscriptions": "Gestion des abonnements",
+      "subscriptions_desc": "Gérer chaque abonnement utilisateur",
+      "marketing": "Campagnes marketing",
+      "marketing_desc": "Planifier et suivre les campagnes digitales",
+      "vetting": "Validation des demandes",
+      "vetting_desc": "Valider chaque demande de fonctionnalité"
+    }
+  },
+  "moderator": {
+    "features": {
+      "journey": "Tableau des moments forts",
+      "journey_desc": "Suivre l’engagement et l’expérience",
+      "opportunities": "Suivi des opportunités",
+      "opportunities_desc": "Recenser les opportunités de service",
+      "issues": "Suivi des incidents",
+      "issues_desc": "Suivre les problèmes signalés",
+      "qa": "Modération Q&R",
+      "qa_desc": "Modérer les retours, plaintes, demandes",
+      "impersonate": "Outil d’impersonation",
+      "impersonate_desc": "Vérifier l’expérience des utilisateurs"
+    }
+  },
+  "brand": {
+    "features": {
+      "showcase": "Vitrine de marque",
+      "showcase_desc": "Mettre en avant vos campagnes",
+      "partnerships": "Pôle partenariats",
+      "partnerships_desc": "Gérer collaborations et co‑branding",
+      "analytics": "Analytique de marque",
+      "analytics_desc": "Suivre la performance et l’audience"
+    }
+  },
+  "premium": {
+    "features": {
+      "highlights": "Moments forts premium",
+      "highlights_desc": "Consommer des highlights personnalisés",
+      "topFive": "Top 5 favoris",
+      "topFive_desc": "Accéder aux 5 meilleurs modules",
+      "modules": "Modules premium",
+      "modules_desc": "Accéder aux modules par abonnement",
+      "subscriptions": "Gestion des abonnements",
+      "subscriptions_desc": "Gérer vos services actifs",
+      "chatbox": "Chatbox membres",
+      "chatbox_desc": "Échanger avec les membres",
+      "aiPrompt": "Prompt IA",
+      "aiPrompt_desc": "Demander de nouvelles fonctionnalités"
+    }
+  },
+  "free": {
+    "features": {
+      "limited": "Accès limité",
+      "limited_desc": "Accès à certaines fonctionnalités sur durée limitée"
+    }
+  },
+  "dashboard": {
+    "title": "Plateforme KCD",
+    "welcome": "Bienvenue",
+    "subtitle": "Vivez l'excellence en transformation digitale",
+    "workspaces": "Espaces de travail",
+    "analytics": "Analytique",
+    "settings": "Paramètres",
+    "workspace": "Votre espace",
+    "newWorkspace": "+ Nouvel espace",
+    "role": "Rôle",
+    "theme": "Thème",
+    "widgets": "Widgets",
+    "signOut": "Se déconnecter"
+  }
+}

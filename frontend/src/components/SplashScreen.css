@@ -69,6 +69,29 @@
   text-align: center;
 }
 
+.splash-skip {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 12;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+}
+
+.splash-skip:hover {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
 .splash-logo {
   color: white;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -118,7 +141,7 @@
 .timer-bar {
   height: 100%;
   background: linear-gradient(90deg, #00ff88 0%, #00ffff 50%, #ff00ff 100%);
-  animation: timerProgress 15s linear forwards;
+  animation: timerProgress 10s linear forwards;
   box-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
 }
 
@@ -143,6 +166,12 @@
 
   .splash-branding {
     bottom: 40px;
+  }
+
+  .splash-skip {
+    top: 16px;
+    right: 16px;
+    padding: 8px 14px;
   }
 }
 

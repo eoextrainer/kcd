@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './LoginPage.css';
+import { getApiBaseUrl } from '../config/api';
 
 export default function LoginPage({ onLogin }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -14,7 +17,8 @@ export default function LoginPage({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/auth/login`, {
+      const apiBaseUrl = getApiBaseUrl();
+      const response = await fetch(`${apiBaseUrl}/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,7 +31,7 @@ export default function LoginPage({ onLogin }) {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.detail || 'Invalid credentials');
+        throw new Error(data.detail || t('errors.invalidCredentials'));
       }
 
       const data = await response.json();
@@ -42,7 +46,13 @@ export default function LoginPage({ onLogin }) {
         subscription_tier: data.user.subscription_tier,
       });
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      const messageText = err?.message || '';
+      const isNetworkError = messageText.toLowerCase().includes('failed to fetch')
+        || messageText.toLowerCase().includes('networkerror');
+      const message = isNetworkError
+        ? t('errors.networkError')
+        : messageText || t('errors.loginFailed');
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -70,34 +80,34 @@ export default function LoginPage({ onLogin }) {
         <div className="login-box">
           <div className="login-header">
             <h1 className="login-logo">KCD</h1>
-            <p className="login-tagline">Experience Excellence</p>
+            <p className="login-tagline">{t('login.tagline')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
             {error && <div className="error-message">{error}</div>}
 
             <div className="form-group">
-              <label htmlFor="email">Email Address</label>
+              <label htmlFor="email">{t('login.email')}</label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder="email@exemple.com"
                 required
                 disabled={loading}
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t('login.password')}</label>
               <div className="password-input-wrapper">
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t('login.password')}
                   required
                   disabled={loading}
                 />
@@ -117,12 +127,12 @@ export default function LoginPage({ onLogin }) {
               className="login-button"
               disabled={loading || !email || !password}
             >
-              {loading ? 'Logging in...' : 'Sign In'}
+              {loading ? t('login.signin_loading') : t('login.signin')}
             </button>
           </form>
 
           <div className="login-divider">
-            <span>or</span>
+            <span>{t('login.or')}</span>
           </div>
 
           <button
@@ -131,22 +141,22 @@ export default function LoginPage({ onLogin }) {
             onClick={handleDemoLogin}
             disabled={loading}
           >
-            Try Demo Account
+            {t('login.demo')}
           </button>
 
           <div className="login-footer">
-            <p>Don't have an account? <span className="signup-link">Sign up here</span></p>
+            <p>{t('login.footer')} <span className="signup-link">{t('login.signup')}</span></p>
           </div>
         </div>
 
         <div className="login-side-text">
-          <h2>Welcome to KCD</h2>
-          <p>Your platform for excellence in digital transformation</p>
+          <h2>{t('login.welcome')}</h2>
+          <p>{t('login.welcome_subtitle')}</p>
           <ul className="features-list">
-            <li>✨ Advanced Analytics</li>
-            <li>🎯 Real-time Insights</li>
-            <li>🔐 Enterprise Security</li>
-            <li>📱 Cross-platform Access</li>
+            <li>✨ {t('login.features.analytics')}</li>
+            <li>🎯 {t('login.features.insights')}</li>
+            <li>🔐 {t('login.features.security')}</li>
+            <li>📱 {t('login.features.access')}</li>
           </ul>
         </div>
       </div>

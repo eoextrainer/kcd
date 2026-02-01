@@ -39,16 +39,17 @@ declare -A TEST_USERS=(
     ["brand"]="brand@kcd-agency.com:brand123"
     ["premium"]="premium@kcd-agency.com:premium123"
     ["free"]="free@kcd-agency.com:free123"
-    ["guest"]="guest@kcd-agency.com:guest123"
 )
 
 # UI User Journeys
 declare -a USER_JOURNEYS=(
     "Splash Screen → Home Screen → Login → Dashboard"
-    "Video plays for 15 seconds"
+    "Video plays for 10 seconds"
+    "Skip CTA skips to Home Screen"
     "Home screen shows login CTA"
-    "Login works for all 7 users"
+    "Login works for all 6 users"
     "Dashboard loads after login"
+    "Hero video carousel rotates every 15 seconds"
 )
 
 # Colors

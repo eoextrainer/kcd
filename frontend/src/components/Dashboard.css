@@ -3,6 +3,7 @@
   min-height: 100vh;
   background: #0f0f0f;
   color: #fff;
+  padding-bottom: 140px;
 }
 
 /* Hero Section - Netflix Style */
@@ -620,4 +621,42 @@
   .settings-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Theme Selector Bar */
+.theme-selector-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 8, 12, 0.9);
+  padding: 12px 24px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+body.theme-clear-sky .dashboard-container {
+  background: #f4f7fb;
+  color: #1f2a37;
+}
+
+body.theme-night-shade .dashboard-container {
+  background: #0f0f0f;
+  color: #fff;
+}
+
+body.theme-corporate .dashboard-container {
+  background: #0b2e4f;
+  color: #f4f8fb;
+}
+
+body.theme-techie .dashboard-container {
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+body.theme-disney .dashboard-container {
+  background: #0c1026;
+  color: #eef2ff;
 }
