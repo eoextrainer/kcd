@@ -222,6 +222,8 @@ const SplashScreen3D = ({ onComplete }) => {
     <div 
       ref={containerRef} 
       className="splash-screen-3d-container"
+    />
+  );
 };
 
 export default SplashScreen3D;
