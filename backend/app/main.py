@@ -7,6 +7,8 @@ from fastapi.responses import JSONResponse
 import os
 from dotenv import load_dotenv
 
+from app.api import auth, users, workspaces
+
 # Load environment variables
 load_dotenv()
 
@@ -63,6 +65,11 @@ async def api_root():
             "docs": "/docs"
         }
     }
+
+# Include API routers
+app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(workspaces.router)
 
 # Error handlers
 @app.exception_handler(Exception)

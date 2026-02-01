@@ -1,7 +1,7 @@
 """
 Authentication routes for user login and token management
 """
-from datetime import timedelta
+from datetime import timedelta, datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -43,17 +43,11 @@ async def login(
     )
     
     # Update last login
-    user.last_login = user.created_at  # Will be updated to current time in models
+    user.last_login = datetime.utcnow()
     db.commit()
     
     return TokenResponse(
         access_token=access_token,
         token_type="bearer",
-        user=UserResponse(
-            id=user.id,
-            email=user.email,
-            full_name=user.full_name,
-            role=user.role,
-            subscription_tier=user.subscription_tier,
-        )
+        user=UserResponse.from_orm(user)
     )

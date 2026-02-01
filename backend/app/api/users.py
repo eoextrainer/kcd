@@ -73,26 +73,14 @@ async def create_user(
         )
     
     user = UserService.create_user(db, user_create)
-    return UserResponse(
-        id=user.id,
-        email=user.email,
-        full_name=user.full_name,
-        role=user.role,
-        subscription_tier=user.subscription_tier,
-    )
+    return UserResponse.from_orm(user)
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_endpoint(
     current_user: User = Depends(get_current_user)
 ) -> UserResponse:
     """Get current authenticated user"""
-    return UserResponse(
-        id=current_user.id,
-        email=current_user.email,
-        full_name=current_user.full_name,
-        role=current_user.role,
-        subscription_tier=current_user.subscription_tier,
-    )
+    return UserResponse.from_orm(current_user)
 
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(
@@ -108,13 +96,7 @@ async def get_user(
             detail="User not found",
         )
     
-    return UserResponse(
-        id=user.id,
-        email=user.email,
-        full_name=user.full_name,
-        role=user.role,
-        subscription_tier=user.subscription_tier,
-    )
+    return UserResponse.from_orm(user)
 
 @router.get("/{user_id}/workspace", response_model=WorkspaceResponse)
 async def get_user_workspace(
