@@ -198,6 +198,8 @@ def seed_database():
     print("Starting database seeding...")
     print(f"Database URL: {DATABASE_URL}")
     
+    global engine
+    
     try:
         # Create tables if they don't exist
         Base.metadata.create_all(bind=engine)
@@ -206,7 +208,6 @@ def seed_database():
         print(f"✗ Database connection error: {e}")
         print("  Falling back to SQLite...")
         # Fallback to SQLite
-        global engine
         DATABASE_URL_FALLBACK = "sqlite:///./kcd.db"
         engine = create_engine(
             DATABASE_URL_FALLBACK,
