@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './SplashScreen.css';
 
-export default function SplashScreen() {
+export default function SplashScreen({ onComplete }) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onComplete?.();
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
   return (
     <div className="splash-container">
       <div className="splash-background">
@@ -17,7 +24,7 @@ export default function SplashScreen() {
         </div>
 
         <h1 className="splash-title">KCD</h1>
-        <p className="splash-subtitle">Experience Excellence</p>
+        <p className="splash-subtitle">Knowledge Conversion Dashboard</p>
 
         <div className="loading-dots">
           <span></span>
@@ -28,5 +35,3 @@ export default function SplashScreen() {
     </div>
   );
 }
-
-export default SplashScreen

@@ -1,41 +1,77 @@
-import { useState, useEffect } from 'react'
-import './App.css'
-import SplashScreen from './components/SplashScreen'
-import LoginPage from './components/LoginPage'
-import Dashboard from './components/Dashboard'
+import React, { useState, useEffect } from 'react';
+import SplashScreen from './components/SplashScreen';
+import LoginPage from './components/LoginPage';
+import HomeScreen from './components/HomeScreen';
+import Dashboard from './components/Dashboard';
+import './App.css';
 
 function App() {
-  const [appState, setAppState] = useState('splash') // splash, login, dashboard
-  const [user, setUser] = useState(null)
+  const [currentPage, setCurrentPage] = useState('splash');
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Check if user is already logged in on mount
   useEffect(() => {
-    // Show splash screen for 3 seconds
-    const timer = setTimeout(() => {
-      setAppState('login')
-    }, 3000)
+    const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    
+    if (storedUser && token) {
+      try {
+        setUser(JSON.parse(storedUser));
+        setCurrentPage('dashboard');
+      } catch (err) {
+        console.error('Error parsing stored user:', err);
+        setCurrentPage('login');
+      }
+    } else {
+      setCurrentPage('splash');
+    }
+    setIsLoading(false);
+  }, []);
 
-    return () => clearTimeout(timer)
-  }, [])
+  const handleSplashComplete = () => {
+    setCurrentPage('login');
+  };
 
   const handleLogin = (userData) => {
-    setUser(userData)
-    setAppState('dashboard')
-  }
+    setUser(userData);
+    setCurrentPage('dashboard');
+  };
 
   const handleLogout = () => {
-    setUser(null)
-    setAppState('login')
+    setUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    setCurrentPage('login');
+  };
+
+  const handleNavigate = (page) => {
+    setCurrentPage(page);
+  };
+
+  if (isLoading) {
+    return <div className="loading-screen">Loading...</div>;
   }
 
-  if (appState === 'splash') {
-    return <SplashScreen />
-  }
-
-  if (appState === 'login') {
-    return <LoginPage onLogin={handleLogin} />
-  }
-
-  return <Dashboard user={user} onLogout={handleLogout} />
+  return (
+    <div className="app">
+      {currentPage === 'splash' && (
+        <SplashScreen onComplete={handleSplashComplete} />
+      )}
+      
+      {currentPage === 'login' && (
+        <LoginPage onLogin={handleLogin} />
+      )}
+      
+      {currentPage === 'home' && user && (
+        <HomeScreen onNavigate={handleNavigate} />
+      )}
+      
+      {currentPage === 'dashboard' && user && (
+        <Dashboard user={user} onLogout={handleLogout} />
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
