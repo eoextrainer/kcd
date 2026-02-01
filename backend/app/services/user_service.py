@@ -8,11 +8,13 @@ from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 from app.models.user import User, Workspace
 from app.schemas.user_schema import UserCreate, UserLogin, UserResponse
 
-load_dotenv()
+ROOT_DIR = Path(__file__).resolve().parents[3]
+load_dotenv(dotenv_path=ROOT_DIR / ".env", override=True)
 
 # Password hashing with argon2 (more secure and no 72-byte limit)
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")

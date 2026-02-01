@@ -6,10 +6,15 @@ import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Add backend to path
 backend_path = Path(__file__).parent
 sys.path.insert(0, str(backend_path))
+
+# Load environment variables from repo root
+ROOT_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(dotenv_path=ROOT_DIR / ".env", override=True)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -22,14 +27,24 @@ from app.models.user import Base, User, Workspace
 
 # Database configuration - Use SQLite by default for local development
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./kcd.db")
+if DATABASE_URL.startswith("sqlite:///./"):
+    relative_path = DATABASE_URL.replace("sqlite:///./", "")
+    DATABASE_URL = f"sqlite:///{(ROOT_DIR / relative_path).as_posix()}"
 
 # Create engine with appropriate configuration
 if "sqlite" in DATABASE_URL:
-    engine = create_engine(
-        DATABASE_URL,
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+    connect_args = {"check_same_thread": False}
+    if DATABASE_URL.endswith(":memory:"):
+        engine = create_engine(
+            DATABASE_URL,
+            connect_args=connect_args,
+            poolclass=StaticPool,
+        )
+    else:
+        engine = create_engine(
+            DATABASE_URL,
+            connect_args=connect_args,
+        )
 else:
     # For PostgreSQL, try with default credentials first
     engine = create_engine(DATABASE_URL, pool_pre_ping=True)
@@ -89,6 +104,15 @@ USERS_DATA = [
         "password": "free123",
         "full_name": "Free Tier User",
         "role": "user",
+        "is_active": True,
+        "is_verified": True,
+        "subscription_tier": "free",
+    },
+    {
+        "email": "guest@kcd-agency.com",
+        "password": "guest123",
+        "full_name": "Guest User",
+        "role": "guest",
         "is_active": True,
         "is_verified": True,
         "subscription_tier": "free",
@@ -208,14 +232,6 @@ def seed_database():
     skipped_count = 0
     
     try:
-        # Remove deprecated guest user if present
-        guest = db.query(User).filter(User.email == "guest@kcd-agency.com").first()
-        if guest:
-            db.query(Workspace).filter(Workspace.user_email == "guest@kcd-agency.com").delete()
-            db.delete(guest)
-            db.commit()
-            print("⊘ Removed guest user account")
-
         # Seed users
         print("\nSeeding users...")
         for user_data in USERS_DATA:
@@ -224,47 +240,60 @@ def seed_database():
             # Check if user already exists
             existing_user = db.query(User).filter(User.email == email).first()
             if existing_user:
-                print(f"⊘ User already exists: {email}")
+                existing_user.hashed_password = hash_password(user_data["password"])
+                existing_user.full_name = user_data["full_name"]
+                existing_user.role = user_data["role"]
+                existing_user.is_active = user_data["is_active"]
+                existing_user.is_verified = user_data["is_verified"]
+                existing_user.subscription_tier = user_data.get("subscription_tier", "free")
+                user = existing_user
+                print(f"↻ Updated user: {email}")
                 skipped_count += 1
-                continue
+            else:
+                # Create user
+                user = User(
+                    email=email,
+                    hashed_password=hash_password(user_data["password"]),
+                    full_name=user_data["full_name"],
+                    role=user_data["role"],
+                    is_active=user_data["is_active"],
+                    is_verified=user_data["is_verified"],
+                    subscription_tier=user_data.get("subscription_tier", "free"),
+                )
+                
+                db.add(user)
+                db.flush()  # Get the user ID
             
-            # Create user
-            user = User(
-                email=email,
-                hashed_password=hash_password(user_data["password"]),
-                full_name=user_data["full_name"],
-                role=user_data["role"],
-                is_active=user_data["is_active"],
-                is_verified=user_data["is_verified"],
-                subscription_tier=user_data.get("subscription_tier", "free"),
-            )
-            
-            db.add(user)
-            db.flush()  # Get the user ID
-            
-            # Create workspace for user
+            # Create or update workspace for user
             role = user_data["role"]
             workspace_template = WORKSPACE_TEMPLATES.get(
                 role,
                 WORKSPACE_TEMPLATES.get("free"),  # Default to free tier
             )
-            
-            workspace = Workspace(
-                user_id=user.id,
-                user_email=email,
-                role=role,
-                workspace_name=workspace_template["name"],
-                workspace_description=workspace_template["description"],
-                widgets=workspace_template["widgets"],
-                theme=workspace_template["theme"],
-            )
-            
-            db.add(workspace)
-            
-            print(f"✓ Created user: {email} ({user.role})")
-            print(f"  └─ Workspace: {workspace_template['name']} ({workspace_template['theme']} theme)")
-            
-            created_count += 1
+
+            workspace = db.query(Workspace).filter(Workspace.user_id == user.id).first()
+            if workspace:
+                workspace.user_email = email
+                workspace.role = role
+                workspace.workspace_name = workspace_template["name"]
+                workspace.workspace_description = workspace_template["description"]
+                workspace.widgets = workspace_template["widgets"]
+                workspace.theme = workspace_template["theme"]
+                print(f"↻ Updated workspace: {workspace_template['name']} ({workspace_template['theme']} theme)")
+            else:
+                workspace = Workspace(
+                    user_id=user.id,
+                    user_email=email,
+                    role=role,
+                    workspace_name=workspace_template["name"],
+                    workspace_description=workspace_template["description"],
+                    widgets=workspace_template["widgets"],
+                    theme=workspace_template["theme"],
+                )
+                db.add(workspace)
+                print(f"✓ Created user: {email} ({user.role})")
+                print(f"  └─ Workspace: {workspace_template['name']} ({workspace_template['theme']} theme)")
+                created_count += 1
         
         # Commit all changes
         db.commit()

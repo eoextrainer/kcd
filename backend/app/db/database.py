@@ -2,27 +2,40 @@
 Database configuration and initialization
 """
 import os
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.exc import OperationalError
 from dotenv import load_dotenv
 
-load_dotenv()
+ROOT_DIR = Path(__file__).resolve().parents[3]
+load_dotenv(dotenv_path=ROOT_DIR / ".env", override=True)
 
 # Get database URL from environment or use SQLite as default
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./kcd.db")
+
+if DATABASE_URL.startswith("sqlite:///./"):
+    relative_path = DATABASE_URL.replace("sqlite:///./", "")
+    DATABASE_URL = f"sqlite:///{(ROOT_DIR / relative_path).as_posix()}"
 
 # Create engine with fallback to SQLite
 try:
     # Try the configured database first
     if "sqlite" in DATABASE_URL:
         # SQLite configuration
-        engine = create_engine(
-            DATABASE_URL,
-            connect_args={"check_same_thread": False},
-            poolclass=StaticPool,
-        )
+        connect_args = {"check_same_thread": False}
+        if DATABASE_URL.endswith(":memory:"):
+            engine = create_engine(
+                DATABASE_URL,
+                connect_args=connect_args,
+                poolclass=StaticPool,
+            )
+        else:
+            engine = create_engine(
+                DATABASE_URL,
+                connect_args=connect_args,
+            )
     else:
         # PostgreSQL or other database configuration
         engine = create_engine(DATABASE_URL, pool_pre_ping=True)
@@ -38,7 +51,6 @@ except (OperationalError, Exception) as e:
     engine = create_engine(
         DATABASE_URL,
         connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
     )
 
 # Create session factory

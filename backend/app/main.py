@@ -6,11 +6,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 from app.api import auth, users, workspaces
 
 # Load environment variables
-load_dotenv()
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(dotenv_path=ROOT_DIR / ".env", override=True)
 
 # Create FastAPI app
 app = FastAPI(
