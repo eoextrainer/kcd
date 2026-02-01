@@ -22,7 +22,7 @@ from app.services.user_service import UserService
 TEST_USERS = [
     {
         "email": "admin@kcd-agency.com",
-        "password": "admin123456",
+        "password": "admin123",
         "full_name": "Admin User",
         "role": "admin",
         "subscription_tier": "brand",
@@ -36,14 +36,14 @@ TEST_USERS = [
     },
     {
         "email": "moderator@kcd-agency.com",
-        "password": "mod123456",
+        "password": "mod123",
         "full_name": "Content Moderator",
         "role": "moderator",
         "subscription_tier": "premium",
     },
     {
         "email": "brand@kcd-agency.com",
-        "password": "brand123456",
+        "password": "brand123",
         "full_name": "Brand Account",
         "role": "brand",
         "subscription_tier": "brand",
@@ -57,14 +57,14 @@ TEST_USERS = [
     },
     {
         "email": "free@kcd-agency.com",
-        "password": "free123456",
+        "password": "free123",
         "full_name": "Free Tier User",
         "role": "user",
         "subscription_tier": "free",
     },
     {
         "email": "guest@kcd-agency.com",
-        "password": "guest123456",
+        "password": "guest123",
         "full_name": "Guest User",
         "role": "guest",
         "subscription_tier": "free",
@@ -271,7 +271,7 @@ def main():
         print("   cd backend && python -m uvicorn app.main:app --reload\n")
         print("2. Test the login endpoint:")
         print("   POST http://localhost:8000/api/v1/auth/login")
-        print("   Body: {\"email\": \"admin@kcd-agency.com\", \"password\": \"admin123456\"}\n")
+        print("   Body: {\"email\": \"admin@kcd-agency.com\", \"password\": \"admin123\"}\n")
         print("3. Use the returned token in Authorization header:")
         print("   Authorization: Bearer <token>\n")
         
