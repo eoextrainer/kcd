@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SplashScreen from './components/SplashScreen';
+import SplashScreen3D from './components/SplashScreen3D';
 import LoginPage from './components/LoginPage';
 import HomeScreen from './components/HomeScreen';
 import Dashboard from './components/Dashboard';
@@ -18,7 +18,7 @@ function App() {
     if (storedUser && token) {
       try {
         setUser(JSON.parse(storedUser));
-        setCurrentPage('dashboard');
+        setCurrentPage('home');
       } catch (err) {
         console.error('Error parsing stored user:', err);
         setCurrentPage('login');
@@ -35,7 +35,7 @@ function App() {
 
   const handleLogin = (userData) => {
     setUser(userData);
-    setCurrentPage('dashboard');
+    setCurrentPage('home');
   };
 
   const handleLogout = () => {
@@ -56,7 +56,7 @@ function App() {
   return (
     <div className="app">
       {currentPage === 'splash' && (
-        <SplashScreen onComplete={handleSplashComplete} />
+        <SplashScreen3D onComplete={handleSplashComplete} />
       )}
       
       {currentPage === 'login' && (

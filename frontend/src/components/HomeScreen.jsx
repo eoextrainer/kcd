@@ -39,8 +39,8 @@ export default function HomeScreen({ onNavigate }) {
     <div className="home-screen">
       {/* Hero Section with Video Background */}
       <div className="hero-section">
-        <video autoPlay muted loop className="hero-video">
-          <source src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc2MtMXZ0YzA=" type="video/mp4" />
+        <video autoPlay muted loop playsInline className="hero-video">
+          <source src="https://storage.coverr.co/videos/coverr-mountains-sunrise-1097/1080p.mp4" type="video/mp4" />
         </video>
         <div className="hero-overlay"></div>
         <div className="hero-content">

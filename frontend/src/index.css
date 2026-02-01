@@ -58,3 +58,19 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+body.theme-netflix {
+  background: #0f0f0f;
+}
+
+body.theme-disney {
+  background: #0b1f3a;
+}
+
+body.theme-google-play {
+  background: #101820;
+}
+
+body.theme-salesforce {
+  background: #0e3a53;
+}

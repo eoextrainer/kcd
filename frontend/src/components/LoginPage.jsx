@@ -14,7 +14,7 @@ export default function LoginPage({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,8 +37,9 @@ export default function LoginPage({ onLogin }) {
       onLogin({
         id: data.user.id,
         email: data.user.email,
-        name: data.user.name,
+        full_name: data.user.full_name,
         role: data.user.role,
+        subscription_tier: data.user.subscription_tier,
       });
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');

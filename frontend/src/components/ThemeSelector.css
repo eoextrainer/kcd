@@ -1,0 +1,64 @@
+.theme-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.theme-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+.theme-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.theme-card.active {
+  border-color: #667eea;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.theme-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.theme-swatch.theme-netflix {
+  background: linear-gradient(135deg, #141414 0%, #e50914 100%);
+}
+
+.theme-swatch.theme-disney {
+  background: linear-gradient(135deg, #0e4ed0 0%, #66d9ff 100%);
+}
+
+.theme-swatch.theme-google-play {
+  background: linear-gradient(135deg, #34a853 0%, #4285f4 50%, #ea4335 100%);
+}
+
+.theme-swatch.theme-salesforce {
+  background: linear-gradient(135deg, #00a1e0 0%, #0e3a53 100%);
+}
+
+.theme-info h5 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+}
+
+.theme-info p {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}

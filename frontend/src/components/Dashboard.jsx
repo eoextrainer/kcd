@@ -1,20 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import ThemeSelector from './ThemeSelector';
 import './Dashboard.css';
 
 export default function Dashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('workspaces');
   const [userData, setUserData] = useState(user);
+  const [workspace, setWorkspace] = useState(null);
+  const [theme, setTheme] = useState('netflix');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchUserData();
+    fetchWorkspace();
   }, []);
+
+  useEffect(() => {
+    const body = document.body;
+    body.classList.remove(
+      'theme-netflix',
+      'theme-disney',
+      'theme-google-play',
+      'theme-salesforce'
+    );
+    if (theme) {
+      body.classList.add(`theme-${theme}`);
+      localStorage.setItem('theme', theme);
+    }
+  }, [theme]);
 
   const fetchUserData = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/users/me`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -29,6 +47,42 @@ export default function Dashboard({ user, onLogout }) {
       console.error('Failed to fetch user data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchWorkspace = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/workspaces/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setWorkspace(data);
+        setTheme(data.theme || localStorage.getItem('theme') || 'netflix');
+      }
+    } catch (err) {
+      console.error('Failed to fetch workspace:', err);
+    }
+  };
+
+  const handleThemeChange = async (nextTheme) => {
+    setTheme(nextTheme);
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/workspaces/me`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ theme: nextTheme }),
+      });
+    } catch (err) {
+      console.error('Failed to update theme:', err);
     }
   };
 
@@ -48,11 +102,11 @@ export default function Dashboard({ user, onLogout }) {
           muted
           poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600'%3E%3Crect fill='%23000' width='1200' height='600'/%3E%3C/svg%3E"
         >
-          <source src="https://images.unsplash.com/photo-1536882240095-0379871feb4e?w=1200&h=600&fit=crop" type="video/mp4" />
+          <source src="https://storage.coverr.co/videos/coverr-typing-on-a-laptop-1586/1080p.mp4" type="video/mp4" />
         </video>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-title">Welcome, {userData?.name || 'User'}!</h1>
+          <h1 className="hero-title">Welcome, {userData?.full_name || 'User'}!</h1>
           <p className="hero-subtitle">Experience Excellence in Digital Transformation</p>
         </div>
       </div>
@@ -101,9 +155,29 @@ export default function Dashboard({ user, onLogout }) {
         {activeTab === 'workspaces' && (
           <div className="workspaces-section">
             <div className="section-header">
-              <h3>Your Workspaces</h3>
+              <div>
+                <h3>Your Workspace</h3>
+                <p className="workspace-subtitle">{workspace?.workspace_name || 'Personalized Workspace'}</p>
+              </div>
               <button className="create-button">+ New Workspace</button>
             </div>
+
+            {workspace && (
+              <div className="workspace-summary">
+                <div className="workspace-meta">
+                  <span className="meta-label">Role</span>
+                  <span className="meta-value">{workspace.role}</span>
+                </div>
+                <div className="workspace-meta">
+                  <span className="meta-label">Theme</span>
+                  <span className="meta-value">{workspace.theme}</span>
+                </div>
+                <div className="workspace-meta">
+                  <span className="meta-label">Widgets</span>
+                  <span className="meta-value">{workspace.widgets?.length || 0}</span>
+                </div>
+              </div>
+            )}
 
             <div className="workspaces-grid">
               {userData?.role === 'admin' && (
@@ -209,6 +283,12 @@ export default function Dashboard({ user, onLogout }) {
               <h3>Account Settings</h3>
             </div>
 
+            <div className="settings-card theme-card">
+              <h4>Theme Selector</h4>
+              <p>Choose your preferred workspace theme</p>
+              <ThemeSelector currentTheme={theme} onThemeChange={handleThemeChange} />
+            </div>
+
             <div className="settings-grid">
               <div className="settings-card">
                 <h4>Profile Information</h4>
@@ -218,7 +298,7 @@ export default function Dashboard({ user, onLogout }) {
                 </div>
                 <div className="settings-item">
                   <label>Name</label>
-                  <p>{userData?.name || 'N/A'}</p>
+                  <p>{userData?.full_name || 'N/A'}</p>
                 </div>
                 <div className="settings-item">
                   <label>Role</label>
