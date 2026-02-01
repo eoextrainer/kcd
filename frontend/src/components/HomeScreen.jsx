@@ -1,53 +1,84 @@
 import React, { useState } from 'react';
 import './HomeScreen.css';
 
-export default function HomeScreen({ onNavigate }) {
-  const [hoveredCard, setHoveredCard] = useState(null);
-
-  const features = [
-    {
-      id: 1,
-      title: 'Brand Verification',
-      description: 'Verify and authenticate your brand account',
-      icon: '✓',
-      color: '#e74c3c'
-    },
-    {
-      id: 2,
-      title: 'Analytics',
-      description: 'Track performance and insights',
-      icon: '📊',
-      color: '#3498db'
-    },
-    {
-      id: 3,
-      title: 'Content Management',
-      description: 'Manage your digital content',
-      icon: '📁',
-      color: '#2ecc71'
-    },
-    {
-      id: 4,
-      title: 'User Profiles',
-      description: 'Customize your workspace',
-      icon: '👤',
-      color: '#f39c12'
-    }
-  ];
+export default function HomeScreen({ onLoginClick }) {
+  const [navOpen, setNavOpen] = useState(false);
 
   return (
     <div className="home-screen">
-      {/* Hero Section with Video Background */}
-      <div className="hero-section">
-        <video autoPlay muted loop playsInline className="hero-video">
-          <source src="https://storage.coverr.co/videos/coverr-mountains-sunrise-1097/1080p.mp4" type="video/mp4" />
-        </video>
-        <div className="hero-overlay"></div>
+      {/* Navigation */}
+      <nav className="home-nav">
+        <div className="nav-brand">
+          <h1>KCD</h1>
+          <p>Creative Directory</p>
+        </div>
+
+        <button
+          className={`nav-toggle ${navOpen ? 'active' : ''}`}
+          onClick={() => setNavOpen(!navOpen)}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <ul className={`nav-menu ${navOpen ? 'active' : ''}`}>
+          <li><a href="#explore">Explore</a></li>
+          <li><a href="#creators">Creators</a></li>
+          <li><a href="#about">About</a></li>
+          <li>
+            <button 
+              className="nav-login-btn"
+              onClick={onLoginClick}
+            >
+              Login
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="hero-section">
         <div className="hero-content">
-          <h1 className="hero-title">Welcome to KCD Platform</h1>
-          <p className="hero-subtitle">Knowledge Conversion Dashboard</p>
-          <button className="cta-button" onClick={() => onNavigate('dashboard')}>
+          <h1 className="hero-title">Welcome to KCD</h1>
+          <p className="hero-subtitle">Discover Creative Excellence</p>
+          <button 
+            className="cta-button"
+            onClick={onLoginClick}
+          >
             Get Started
+          </button>
+        </div>
+
+        {/* Animated Background */}
+        <div className="hero-background">
+          <div className="gradient-orb orb-1"></div>
+          <div className="gradient-orb orb-2"></div>
+          <div className="gradient-orb orb-3"></div>
+        </div>
+      </section>
+
+      {/* Featured Section */}
+      <section className="featured-section">
+        <h2>Featured Creators</h2>
+        <div className="creators-grid">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="creator-card">
+              <div className="creator-placeholder"></div>
+              <h3>Creator {item}</h3>
+              <p>Specializing in Fashion & Design</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="home-footer">
+        <p>&copy; 2026 KCD - Creative Directory. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
           </button>
         </div>
       </div>

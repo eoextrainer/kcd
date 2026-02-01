@@ -34,11 +34,11 @@ else:
     # For PostgreSQL, try with default credentials first
     engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing with argon2
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 def hash_password(password: str) -> str:
-    """Hash a password using bcrypt"""
+    """Hash a password using argon2"""
     return pwd_context.hash(password)
 
 # User data to seed

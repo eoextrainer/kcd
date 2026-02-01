@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SplashScreen3D from './components/SplashScreen3D';
+import SplashScreen from './components/SplashScreen';
 import LoginPage from './components/LoginPage';
 import HomeScreen from './components/HomeScreen';
 import Dashboard from './components/Dashboard';
@@ -18,10 +18,10 @@ function App() {
     if (storedUser && token) {
       try {
         setUser(JSON.parse(storedUser));
-        setCurrentPage('home');
+        setCurrentPage('dashboard');
       } catch (err) {
         console.error('Error parsing stored user:', err);
-        setCurrentPage('login');
+        setCurrentPage('splash');
       }
     } else {
       setCurrentPage('splash');
@@ -30,19 +30,23 @@ function App() {
   }, []);
 
   const handleSplashComplete = () => {
-    setCurrentPage('login');
+    setCurrentPage('home');
   };
 
   const handleLogin = (userData) => {
     setUser(userData);
-    setCurrentPage('home');
+    setCurrentPage('dashboard');
+  };
+
+  const handleLoginClick = () => {
+    setCurrentPage('login');
   };
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    setCurrentPage('login');
+    setCurrentPage('splash');
   };
 
   const handleNavigate = (page) => {
@@ -56,15 +60,15 @@ function App() {
   return (
     <div className="app">
       {currentPage === 'splash' && (
-        <SplashScreen3D onComplete={handleSplashComplete} />
+        <SplashScreen onComplete={handleSplashComplete} />
+      )}
+      
+      {currentPage === 'home' && (
+        <HomeScreen onLoginClick={handleLoginClick} />
       )}
       
       {currentPage === 'login' && (
         <LoginPage onLogin={handleLogin} />
-      )}
-      
-      {currentPage === 'home' && user && (
-        <HomeScreen onNavigate={handleNavigate} />
       )}
       
       {currentPage === 'dashboard' && user && (

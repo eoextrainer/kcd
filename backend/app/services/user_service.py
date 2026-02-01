@@ -14,8 +14,8 @@ from app.schemas.user_schema import UserCreate, UserLogin, UserResponse
 
 load_dotenv()
 
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing with argon2 (more secure and no 72-byte limit)
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 # JWT configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
@@ -27,12 +27,12 @@ class UserService:
     
     @staticmethod
     def hash_password(password: str) -> str:
-        """Hash a password"""
+        """Hash a password using argon2"""
         return pwd_context.hash(password)
     
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
-        """Verify a password"""
+        """Verify a password using argon2"""
         return pwd_context.verify(plain_password, hashed_password)
     
     @staticmethod

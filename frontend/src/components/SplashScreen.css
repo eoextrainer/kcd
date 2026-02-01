@@ -1,200 +1,102 @@
-.splash-container {
+/* Splash Screen - YouTube Video Hero */
+.splash-screen {
   width: 100%;
   height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  position: relative;
   background: #000;
+  transition: opacity 0.5s ease-out;
 }
 
-.splash-background {
+.splash-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Video Container */
+.splash-video-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  overflow: hidden;
 }
 
-.gradient-bg {
-  position: absolute;
+.splash-video {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  animation: gradientShift 3s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  }
-  50% {
-    background: linear-gradient(135deg, #764ba2 0%, #f093fb 50%, #667eea 100%);
-  }
-  100% {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  }
-}
-
-.animated-bg {
+  border: none;
+  object-fit: cover;
+  /* Center and cover the entire viewport */
   position: absolute;
-  width: 150%;
-  height: 150%;
-  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-  animation: float 6s ease-in-out infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateX(0) translateY(0);
-  }
-  50% {
-    transform: translateX(-20px) translateY(-20px);
-  }
+/* Elegant Overlay Gradient */
+.splash-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  z-index: 1;
 }
 
-.splash-content {
-  position: relative;
+/* Branding */
+.splash-branding {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 10;
   text-align: center;
-  perspective: 1000px;
 }
 
-.letters-container {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
-  height: 150px;
-  align-items: center;
+.splash-logo {
+  color: white;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: slideUp 1s ease-out forwards;
+  opacity: 0;
 }
 
-.letter {
-  font-size: 120px;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  animation: pop 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
-  transform-style: preserve-3d;
-  perspective: 1000px;
+.splash-logo h1 {
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 8px;
+  text-transform: uppercase;
 }
 
-.letter.k {
-  animation-delay: 0s;
-  animation-name: popK;
+.splash-logo p {
+  font-size: 0.9rem;
+  margin: 10px 0 0 0;
+  letter-spacing: 2px;
+  font-weight: 300;
+  text-transform: uppercase;
+  opacity: 0.9;
 }
 
-.letter.c {
-  animation-delay: 0.3s;
-  animation-name: popC;
-}
-
-.letter.d {
-  animation-delay: 0.6s;
-  animation-name: popD;
-}
-
-@keyframes popK {
-  0% {
-    opacity: 0;
-    transform: scale(0) rotateX(-90deg) rotateY(-90deg) translateZ(-100px);
-  }
-  50% {
-    transform: scale(1.2) rotateX(10deg) rotateY(10deg) translateZ(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotateX(0) rotateY(0) translateZ(0);
-  }
-}
-
-@keyframes popC {
-  0% {
-    opacity: 0;
-    transform: scale(0) rotateX(90deg) rotateY(90deg) translateZ(-100px);
-  }
-  50% {
-    transform: scale(1.2) rotateX(-10deg) rotateY(10deg) translateZ(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotateX(0) rotateY(0) translateZ(0);
-  }
-}
-
-@keyframes popD {
-  0% {
-    opacity: 0;
-    transform: scale(0) rotateX(-90deg) rotateY(90deg) translateZ(-100px);
-  }
-  50% {
-    transform: scale(1.2) rotateX(10deg) rotateY(-10deg) translateZ(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotateX(0) rotateY(0) translateZ(0);
-  }
-}
-
-.splash-title {
-  font-size: 80px;
-  font-weight: 900;
-  color: #fff;
-  margin: 20px 0 10px;
-  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  letter-spacing: 5px;
-  animation: fadeInUp 1s ease 0.9s both;
-}
-
-.splash-subtitle {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0 0 30px;
-  animation: fadeInUp 1s ease 1.2s both;
-}
-
-.loading-dots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 40px;
-  animation: fadeIn 1s ease 1.5s both;
-}
-
-.loading-dots span {
-  width: 12px;
-  height: 12px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  animation: bounce 1.4s infinite;
-}
-
-.loading-dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loading-dots span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  40% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
+@keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -202,11 +104,46 @@
   }
 }
 
-@keyframes fadeIn {
+/* Timer Bar */
+.splash-timer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 5;
+}
+
+.timer-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff88 0%, #00ffff 50%, #ff00ff 100%);
+  animation: timerProgress 15s linear forwards;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+}
+
+@keyframes timerProgress {
   from {
-    opacity: 0;
+    width: 0%;
   }
   to {
-    opacity: 1;
+    width: 100%;
   }
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .splash-logo h1 {
+    font-size: 2.5rem;
+  }
+
+  .splash-logo p {
+    font-size: 0.8rem;
+  }
+
+  .splash-branding {
+    bottom: 40px;
+  }
+}
+
+
