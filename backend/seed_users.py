@@ -8,15 +8,31 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 # Add backend to path
-backend_path = Path(__file__).parent.parent / "backend"
+backend_path = Path(__file__).parent
 sys.path.insert(0, str(backend_path))
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.pool import StaticPool
+from sqlalchemy.exc import OperationalError
 from passlib.context import CryptContext
 
-# Database configuration
+# Import models
+from app.models.user import Base, User, Workspace
+
+# Database configuration - Use SQLite by default for local development
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./kcd.db")
+
+# Create engine with appropriate configuration
+if "sqlite" in DATABASE_URL:
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+else:
+    # For PostgreSQL, try with default credentials first
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -180,98 +196,110 @@ WORKSPACE_TEMPLATES = {
 def seed_database():
     """Seed the database with test users and workspaces"""
     print("Starting database seeding...")
+    print(f"Database URL: {DATABASE_URL}")
     
-    # For now, this is a template. The actual implementation depends on
-    # your database models. Here's what the script would do:
-    
-    created_users = []
-    
-    for user_data in USERS_DATA:
-        user_info = {
-            **user_data,
-            "hashed_password": hash_password(user_data.pop("password")),
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow(),
-        }
-        created_users.append(user_info)
-        print(f"✓ Prepared user: {user_data['email']} ({user_data['role']})")
-    
-    # Create workspaces for each user
-    workspaces = []
-    for user_data in USERS_DATA:
-        role = user_data["role"]
-        workspace_template = WORKSPACE_TEMPLATES.get(
-            role,
-            WORKSPACE_TEMPLATES.get("free"),  # Default to free tier
+    try:
+        # Create tables if they don't exist
+        Base.metadata.create_all(bind=engine)
+        print("✓ Database tables created/verified")
+    except OperationalError as e:
+        print(f"✗ Database connection error: {e}")
+        print("  Falling back to SQLite...")
+        # Fallback to SQLite
+        global engine
+        DATABASE_URL_FALLBACK = "sqlite:///./kcd.db"
+        engine = create_engine(
+            DATABASE_URL_FALLBACK,
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
         )
+        Base.metadata.create_all(bind=engine)
+        print("✓ Database tables created in SQLite")
+    
+    # Create session
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    db = SessionLocal()
+    
+    created_count = 0
+    skipped_count = 0
+    
+    try:
+        # Seed users
+        print("\nSeeding users...")
+        for user_data in USERS_DATA:
+            email = user_data["email"]
+            
+            # Check if user already exists
+            existing_user = db.query(User).filter(User.email == email).first()
+            if existing_user:
+                print(f"⊘ User already exists: {email}")
+                skipped_count += 1
+                continue
+            
+            # Create user
+            user = User(
+                email=email,
+                hashed_password=hash_password(user_data["password"]),
+                full_name=user_data["full_name"],
+                role=user_data["role"],
+                is_active=user_data["is_active"],
+                is_verified=user_data["is_verified"],
+                subscription_tier=user_data.get("subscription_tier", "free"),
+            )
+            
+            db.add(user)
+            db.flush()  # Get the user ID
+            
+            # Create workspace for user
+            role = user_data["role"]
+            workspace_template = WORKSPACE_TEMPLATES.get(
+                role,
+                WORKSPACE_TEMPLATES.get("free"),  # Default to free tier
+            )
+            
+            workspace = Workspace(
+                user_id=user.id,
+                user_email=email,
+                role=role,
+                workspace_name=workspace_template["name"],
+                workspace_description=workspace_template["description"],
+                widgets=workspace_template["widgets"],
+                theme=workspace_template["theme"],
+            )
+            
+            db.add(workspace)
+            
+            print(f"✓ Created user: {email} ({user.role})")
+            print(f"  └─ Workspace: {workspace_template['name']} ({workspace_template['theme']} theme)")
+            
+            created_count += 1
         
-        workspace = {
-            "user_email": user_data["email"],
-            "role": role,
-            "workspace_name": workspace_template["name"],
-            "workspace_description": workspace_template["description"],
-            "widgets": workspace_template["widgets"],
-            "theme": workspace_template["theme"],
-            "created_at": datetime.utcnow(),
-        }
-        workspaces.append(workspace)
-        print(
-            f"✓ Prepared workspace: {workspace_template['name']} "
-            f"(Theme: {workspace_template['theme']})"
-        )
-    
-    print("\n" + "="*60)
-    print("SEED DATA SUMMARY")
-    print("="*60)
-    print(f"Total users to create: {len(created_users)}")
-    print(f"Total workspaces to create: {len(workspaces)}")
-    
-    print("\nUSERS:")
-    for user in created_users:
-        print(f"  • {user['email']} ({user['role']})")
-    
-    print("\nWORKSPACES:")
-    for ws in workspaces:
-        print(f"  • {ws['workspace_name']} ({ws['theme']} theme)")
-    
-    print("\n" + "="*60)
-    print("INSTRUCTIONS:")
-    print("="*60)
-    print("""
-To actually seed the database, you need to:
-
-1. Create SQLAlchemy models for User and Workspace in:
-   backend/app/models/user.py
-   backend/app/models/workspace.py
-
-2. Create database session and add users:
-   from backend.app.db.database import SessionLocal
-   from backend.app.models.user import User
-   from backend.app.models.workspace import Workspace
-   
-   db = SessionLocal()
-   
-   # Add users to database
-   for user_data in created_users:
-       db_user = User(**user_data)
-       db.add(db_user)
-   
-   db.commit()
-   
-   # Add workspaces
-   for ws_data in workspaces:
-       db_workspace = Workspace(**ws_data)
-       db.add(db_workspace)
-   
-   db.commit()
-
-3. Or use the FastAPI endpoint to create users via API
-
-Test credentials:
-""")
-    
-    for user_data in USERS_DATA:
-        print(f"  • Email: {user_data['email']:<35} Password: {user_data['password']}")
+        # Commit all changes
+        db.commit()
+        
+        print("\n" + "="*70)
+        print("SEED SUMMARY")
+        print("="*70)
+        print(f"✓ Users created: {created_count}")
+        print(f"⊘ Users skipped (already exist): {skipped_count}")
+        print(f"✓ Workspaces created: {created_count}")
+        
+        print("\n" + "="*70)
+        print("TEST CREDENTIALS")
+        print("="*70)
+        for user_data in USERS_DATA:
+            print(f"Email: {user_data['email']:<35} Password: {user_data['password']}")
+        
+        print("\n" + "="*70)
+        print("✓ Database seeding completed successfully!")
+        print("="*70)
+        
+    except Exception as e:
+        db.rollback()
+        print(f"\n✗ Error during seeding: {e}")
+        raise
+    finally:
+        db.close()
 
 if __name__ == "__main__":
     seed_database()

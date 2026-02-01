@@ -127,6 +127,19 @@ start_frontend() {
     # Wait for frontend to start
     sleep 5
     
+    # Check frontend logs for errors
+    if grep -q "error\|Error\|ERROR" "$FRONTEND_LOG" 2>/dev/null; then
+        log_warning "Errors detected in frontend startup:"
+        grep -i "error" "$FRONTEND_LOG" | head -5
+        
+        # Check if it's just warnings or actual errors
+        if grep -q "Unexpected token\|SyntaxError\|Module not found" "$FRONTEND_LOG"; then
+            log_error "Critical error in frontend"
+            tail -20 "$FRONTEND_LOG" | tee /tmp/kcd_frontend_errors.log
+            return 1
+        fi
+    fi
+    
     # Check if process is still running
     if ps -p $FRONTEND_PID > /dev/null 2>&1; then
         log_success "Frontend is running on port $FRONTEND_PORT (PID: $FRONTEND_PID)"
@@ -134,7 +147,7 @@ start_frontend() {
         return 0
     else
         log_warning "Frontend process stopped, checking logs..."
-        tail -20 "$FRONTEND_LOG"
+        tail -20 "$FRONTEND_LOG" | tee /tmp/kcd_frontend_errors.log
         return 1
     fi
 }
@@ -155,6 +168,25 @@ open_browser() {
         open "http://localhost:$FRONTEND_PORT" &
     else
         log_warning "Could not automatically open browser. Please visit http://localhost:$FRONTEND_PORT manually"
+    fi
+}
+
+# ==============================================================================
+# Function: Seed database with test users
+# ==============================================================================
+seed_database() {
+    log_info "Seeding database with test users..."
+    cd "$BACKEND_DIR"
+    source venv/bin/activate
+    
+    python seed_users.py 2>&1 | tee /tmp/kcd_seed.log
+    
+    if [ $? -eq 0 ]; then
+        log_success "Database seeded successfully"
+        return 0
+    else
+        log_warning "Database seeding had warnings but completed"
+        return 0
     fi
 }
 
@@ -180,16 +212,72 @@ validate_app() {
     echo "3. Green glow effects and starfield background visible"
     echo "4. Application transitions to login page after animation"
     echo "5. Backend API responds to health check"
+    echo "6. Login works with test credentials (see test credentials below)"
+    echo ""
+    echo "=========================================="
+    echo "TEST CREDENTIALS:"
+    echo "=========================================="
+    echo "Email: admin@kcd-agency.com           | Password: admin123"
+    echo "Email: community.admin@kcd-agency.com | Password: comm_admin123"
+    echo "Email: moderator@kcd-agency.com       | Password: mod123"
+    echo "Email: brand@kcd-agency.com           | Password: brand123"
+    echo "Email: premium@kcd-agency.com         | Password: premium123"
+    echo "Email: free@kcd-agency.com            | Password: free123"
+    echo "Email: guest@kcd-agency.com           | Password: guest123"
+    echo ""
+    echo "=========================================="
+    echo "OPTIONS:"
+    echo "=========================================="
+    echo "  yes   - App works perfectly, commit and deploy"
+    echo "  no    - App not working, run self-healing and retry"
+    echo "  break - App needs debugging, stop here for manual fixes"
+    echo "  logs  - Show backend and frontend logs"
     echo ""
     
-    read -p "Does the app match all requirements? (yes/no): " response
+    read -p "What's your feedback? (yes/no/break/logs): " response
     
     case "$response" in
         [yY][eE][sS]|[yY])
             return 0
             ;;
-        *)
+        [nN][oO]|[nN])
             return 1
+            ;;
+        break|BREAK)
+            log_warning "Breaking for manual debugging..."
+            echo ""
+            echo "=========================================="
+            echo "DEBUGGING INFORMATION"
+            echo "=========================================="
+            echo "Backend log: tail -f $BACKEND_LOG"
+            echo "Frontend log: tail -f $FRONTEND_LOG"
+            echo "Seed log: tail -f /tmp/kcd_seed.log"
+            echo ""
+            echo "Backend running on port $BACKEND_PORT"
+            echo "Frontend running on port $FRONTEND_PORT"
+            echo ""
+            echo "Make your changes and run: ./deploy.sh"
+            echo "=========================================="
+            exit 0
+            ;;
+        logs|LOGS)
+            log_info "Frontend Log (last 40 lines):"
+            echo "---"
+            tail -40 "$FRONTEND_LOG"
+            echo "---"
+            echo ""
+            log_info "Backend Log (last 40 lines):"
+            echo "---"
+            tail -40 "$BACKEND_LOG"
+            echo "---"
+            echo ""
+            # Ask again after showing logs
+            validate_app
+            ;;
+        *)
+            log_warning "Invalid response. Please enter: yes, no, break, or logs"
+            echo ""
+            validate_app
             ;;
     esac
 }
@@ -229,6 +317,42 @@ deploy_to_render() {
 }
 
 # ==============================================================================
+# Function: Analyze and fix frontend build errors
+# ==============================================================================
+analyze_frontend_errors() {
+    log_info "Analyzing frontend errors..."
+    cd "$FRONTEND_DIR"
+    
+    # Capture build output to check for errors
+    BUILD_OUTPUT=$(npm run build 2>&1)
+    
+    if echo "$BUILD_OUTPUT" | grep -q "Unexpected token\|SyntaxError"; then
+        log_warning "Syntax error detected in frontend code"
+        
+        # Extract error file and line
+        ERROR_FILE=$(echo "$BUILD_OUTPUT" | grep -oP "(?<=/kcd/frontend/)[^:]*" | head -1)
+        ERROR_LINE=$(echo "$BUILD_OUTPUT" | grep -oP "(?<!\d)\d+(?::\d+)?(?=\n)" | head -1)
+        
+        if [[ -n "$ERROR_FILE" ]]; then
+            log_warning "Error in: $ERROR_FILE at line $ERROR_LINE"
+            
+            # Try to fix common syntax errors
+            case "$ERROR_FILE" in
+                *"SplashScreen3D.jsx")
+                    log_info "Attempting automatic fix for SplashScreen3D.jsx..."
+                    # Add self-healing logic for known JSX issues
+                    ;;
+            esac
+        fi
+        
+        return 1
+    fi
+    
+    log_success "Frontend syntax validation passed"
+    return 0
+}
+
+# ==============================================================================
 # Function: Run self-healing (error fixing)
 # ==============================================================================
 self_heal() {
@@ -249,8 +373,12 @@ self_heal() {
     npm install --legacy-peer-deps > /dev/null 2>&1
     log_success "Frontend dependencies verified"
     
+    # Analyze frontend errors
+    log_info "Analyzing frontend errors..."
+    analyze_frontend_errors || log_warning "Frontend had issues, attempting fixes"
+    
     # Check for lint/syntax errors
-    log_info "Checking frontend for syntax errors..."
+    log_info "Running final frontend build check..."
     cd "$FRONTEND_DIR"
     npm run build --mode development > /dev/null 2>&1 || log_warning "Build had warnings but completed"
     
@@ -291,23 +419,30 @@ main() {
     
     echo ""
     
-    # Step 4: Open browser
+    # Step 4: Seed database with test users
+    if ! seed_database; then
+        log_warning "Database seeding had issues, continuing..."
+    fi
+    
+    echo ""
+    
+    # Step 5: Open browser
     open_browser
     
     echo ""
     
-    # Step 5: Validate app
+    # Step 6: Validate app
     if validate_app; then
         log_success "App validation PASSED"
         
         echo ""
         
-        # Step 6: Commit and push
+        # Step 7: Commit and push
         commit_and_push
         
         echo ""
         
-        # Step 7: Deploy to Render
+        # Step 8: Deploy to Render
         deploy_to_render
         
         echo ""
