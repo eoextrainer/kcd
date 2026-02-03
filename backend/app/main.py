@@ -34,10 +34,9 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 cors_env = os.getenv("CORS_ORIGINS", "").strip()
 if cors_env:
     CORS_ORIGINS = [origin.strip() for origin in cors_env.split(",") if origin.strip()]
-    CORS_ALLOW_CREDENTIALS = True
 else:
     CORS_ORIGINS = ["*"]
-    CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_CREDENTIALS = False
 
 app.add_middleware(
     CORSMiddleware,
@@ -45,6 +44,7 @@ app.add_middleware(
     allow_credentials=CORS_ALLOW_CREDENTIALS,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_origin_regex=".*",
 )
 
 async def self_heal_loop():
