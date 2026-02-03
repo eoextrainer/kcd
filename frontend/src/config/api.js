@@ -23,5 +23,13 @@ export const getApiBaseUrl = () => {
     return normalizeApiBase(normalizeBaseUrl(envBase));
   }
 
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin;
+    if (origin.includes('kcd-frontend')) {
+      const inferred = origin.replace('kcd-frontend', 'kcd-api');
+      return normalizeApiBase(normalizeBaseUrl(inferred));
+    }
+  }
+
   return '/api';
 };
