@@ -11,7 +11,10 @@ const normalizeApiBase = (url) => {
   if (url.endsWith('/v1')) {
     return url.slice(0, -3);
   }
-  return url;
+  if (url.endsWith('/api')) {
+    return url;
+  }
+  return `${url}/api`;
 };
 
 export const getApiBaseUrl = () => {
