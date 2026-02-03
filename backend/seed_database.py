@@ -23,128 +23,124 @@ TEST_USERS = [
     {
         "email": "admin@kcd-agency.com",
         "password": "admin123",
-        "full_name": "Admin User",
+        "full_name": "System Admin",
         "role": "admin",
-        "subscription_tier": "brand",
+        "subscription_tier": "admin",
+        "is_verified": True,
     },
     {
-        "email": "community.admin@kcd-agency.com",
-        "password": "comm_admin123",
-        "full_name": "Community Admin",
-        "role": "community_admin",
-        "subscription_tier": "premium",
+        "email": "manager@kcd-agency.com",
+        "password": "manager123",
+        "full_name": "Platform Admin",
+        "role": "manager",
+        "subscription_tier": "manager",
+        "is_verified": True,
     },
     {
         "email": "moderator@kcd-agency.com",
-        "password": "mod123",
-        "full_name": "Content Moderator",
+        "password": "moderator123",
+        "full_name": "Platform Moderator",
         "role": "moderator",
-        "subscription_tier": "premium",
+        "subscription_tier": "moderator",
+        "is_verified": True,
     },
     {
-        "email": "brand@kcd-agency.com",
-        "password": "brand123",
-        "full_name": "Brand Account",
-        "role": "brand",
-        "subscription_tier": "brand",
-    },
-    {
-        "email": "premium@kcd-agency.com",
-        "password": "premium123",
-        "full_name": "Premium Creator",
+        "email": "user1@kcd-agency.com",
+        "password": "user1premium",
+        "full_name": "User One",
         "role": "user",
         "subscription_tier": "premium",
+        "is_verified": True,
     },
     {
-        "email": "free@kcd-agency.com",
-        "password": "free123",
-        "full_name": "Free Tier User",
+        "email": "user2@kcd-agency.com",
+        "password": "user2normal",
+        "full_name": "User Two",
         "role": "user",
         "subscription_tier": "free",
+        "is_verified": False,
     },
     {
-        "email": "guest@kcd-agency.com",
-        "password": "guest123",
-        "full_name": "Guest User",
-        "role": "guest",
-        "subscription_tier": "free",
+        "email": "demo@kcd-agency.com",
+        "password": "demo123",
+        "full_name": "Demo User",
+        "role": "user",
+        "subscription_tier": "demo",
+        "is_verified": False,
     },
 ]
 
 # Workspace templates by role
 WORKSPACE_TEMPLATES = {
     "admin": {
-        "workspace_name": "Admin Dashboard",
-        "workspace_description": "System administration and monitoring",
-        "theme": "dark",
+        "workspace_name": "System Atelier",
+        "workspace_description": "Gouvernance de la plateforme et supervision globale",
+        "theme": "aura",
         "widgets": [
-            "system_health",
-            "user_analytics",
-            "content_moderation_queue",
-            "security_alerts",
-            "recent_reports",
-            "db_status",
+            "platform_health",
+            "talent_registry",
+            "casting_pipeline",
+            "compliance_review",
+            "risk_alerts",
+            "partner_access",
         ]
     },
-    "community_admin": {
-        "workspace_name": "Community Management",
-        "workspace_description": "Manage community and moderate content",
-        "theme": "dark",
+    "manager": {
+        "workspace_name": "Platform Direction",
+        "workspace_description": "Pilotage des opérations et des équipes",
+        "theme": "aura",
         "widgets": [
-            "user_management",
-            "moderation_queue",
-            "community_stats",
-            "reports",
-            "banned_users",
-            "community_feedback",
+            "portfolio_approvals",
+            "booking_flow",
+            "client_briefs",
+            "content_standards",
+            "team_overview",
         ]
     },
     "moderator": {
-        "workspace_name": "Moderation Center",
-        "workspace_description": "Review and moderate content",
-        "theme": "dark",
+        "workspace_name": "Moderation Studio",
+        "workspace_description": "Qualité, conformité et sécurité des contenus",
+        "theme": "aura",
         "widgets": [
-            "pending_reviews",
-            "reported_content",
-            "user_warnings",
-            "content_analytics",
-            "moderation_stats",
+            "content_review",
+            "flagged_profiles",
+            "photo_rights",
+            "feedback_queue",
         ]
     },
-    "brand": {
-        "workspace_name": "Brand Portal",
-        "workspace_description": "Brand verification and management",
-        "theme": "brand",
+    "premium": {
+        "workspace_name": "Premium Model Studio",
+        "workspace_description": "Outils avancés pour portfolios et castings",
+        "theme": "aura",
         "widgets": [
-            "brand_verification",
-            "brand_analytics",
-            "content_tools",
-            "revenue_tracking",
-            "brand_settings",
-        ]
-    },
-    "user": {
-        "workspace_name": "Creator Studio",
-        "workspace_description": "Create and manage your content",
-        "theme": "netflix",
-        "widgets": [
-            "content_feed",
+            "portfolio_editor",
+            "casting_invites",
+            "brand_deals",
             "analytics",
-            "my_content",
+            "availability_calendar",
+        ]
+    },
+    "free": {
+        "workspace_name": "Model Workspace",
+        "workspace_description": "Gérez votre book et votre présence",
+        "theme": "aura",
+        "widgets": [
+            "portfolio_overview",
+            "applications",
             "messages",
             "notifications",
         ]
     },
-    "guest": {
-        "workspace_name": "Explore",
-        "workspace_description": "Discover content",
-        "theme": "netflix",
+    "demo": {
+        "workspace_name": "Demo Atelier",
+        "workspace_description": "Découverte guidée de l’écosystème",
+        "theme": "aura",
         "widgets": [
-            "discover_feed",
-            "trending",
-            "recommendations",
+            "guided_tour",
+            "sample_portfolio",
+            "sample_castings",
         ]
-    }
+    },
 }
 
 def clear_existing_data(db: Session):
@@ -167,7 +163,8 @@ def create_seed_users(db: Session):
     
     # Initialize database tables
     print("Creating database tables...")
-    init_db()
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     print("✓ Database tables created\n")
     
     # Clear existing data
@@ -195,7 +192,7 @@ def create_seed_users(db: Session):
                 role=user_data["role"],
                 subscription_tier=user_data["subscription_tier"],
                 is_active=True,
-                is_verified=(user_data["role"] == "admin"),  # Admin verified by default
+                is_verified=user_data.get("is_verified", False),
             )
             
             db.add(user)
@@ -203,12 +200,12 @@ def create_seed_users(db: Session):
             
             # Get workspace template
             role_key = user_data["role"]
-            if role_key == "user" and user_data["subscription_tier"] == "premium":
-                workspace_config = WORKSPACE_TEMPLATES["user"].copy()
-            elif role_key not in WORKSPACE_TEMPLATES:
-                workspace_config = WORKSPACE_TEMPLATES["user"].copy()
-            else:
-                workspace_config = WORKSPACE_TEMPLATES[role_key].copy()
+            tier_key = user_data.get("subscription_tier", "free")
+            template_key = tier_key if role_key == "user" else role_key
+            workspace_config = WORKSPACE_TEMPLATES.get(
+                template_key,
+                WORKSPACE_TEMPLATES["free"],
+            ).copy()
             
             # Create workspace for user
             workspace = Workspace(

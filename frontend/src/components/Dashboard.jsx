@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import ThemeSelector from './ThemeSelector';
 import './Dashboard.css';
 import { getApiBaseUrl } from '../config/api';
 
@@ -9,25 +8,33 @@ export default function Dashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('workspaces');
   const [userData, setUserData] = useState(user);
   const [workspace, setWorkspace] = useState(null);
-  const [theme, setTheme] = useState('night-shade');
+  const [theme, setTheme] = useState('aura');
+  const [chatTarget, setChatTarget] = useState('community');
+  const [chatInput, setChatInput] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [chatOpen, setChatOpen] = useState(true);
+  const [assets, setAssets] = useState([]);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const apiBaseUrl = getApiBaseUrl();
+  const chatEndRef = useRef(null);
 
   const roleThemeMap = useMemo(() => ({
-    admin: 'corporate',
-    community_admin: 'corporate',
-    moderator: 'clear-sky',
-    brand: 'disney',
-    premium: 'night-shade',
-    free: 'night-shade',
+    admin: 'aura',
+    manager: 'aura',
+    moderator: 'aura',
+    premium: 'aura',
+    free: 'aura',
+    demo: 'aura',
   }), []);
 
   const normalizeTheme = (value) => {
     const mapping = {
-      netflix: 'night-shade',
-      'google-play': 'clear-sky',
-      salesforce: 'corporate',
-      disney: 'disney',
+      netflix: 'aura',
+      'google-play': 'aura',
+      salesforce: 'aura',
+      disney: 'aura',
+      dark: 'aura',
     };
     return mapping[value] || value;
   };
@@ -35,50 +42,105 @@ export default function Dashboard({ user, onLogout }) {
     ? (userData?.subscription_tier || 'free')
     : (userData?.role || 'free');
 
+  const isUserTier = ['premium', 'free', 'demo'].includes(effectiveRole);
+
+  const resolvedAssets = useMemo(() => assets.map((asset) => ({
+    ...asset,
+    resolvedUrl: asset.file_url?.startsWith('http')
+      ? asset.file_url
+      : `${apiBaseUrl.replace('/api', '')}${asset.file_url}`,
+  })), [assets, apiBaseUrl]);
+
+  const channelMessages = useMemo(() => (
+    messages
+      .filter((message) => !message.channel || message.channel === chatTarget)
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+  ), [messages, chatTarget]);
+
+  const lastMessagePreview = useMemo(() => {
+    if (!channelMessages.length) return 'Aucun message.';
+    const last = channelMessages[channelMessages.length - 1];
+    return `${last.user_name || last.from || 'Anonyme'}: ${last.content}`;
+  }, [channelMessages]);
+
+  const formatChatTime = (value) => {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const gamification = useMemo(() => {
+    const base = effectiveRole === 'premium' ? 78 : effectiveRole === 'free' ? 42 : 24;
+    const engagement = base + 6;
+    const community = base - 4;
+    const ratings = base + 8;
+    const score = Math.round((engagement + community + ratings) / 3);
+    const level = Math.min(10, Math.max(1, Math.ceil(score / 10)));
+    const warning = score < 35
+      ? 'Faible engagement. Réactivez votre présence pour conserver vos accès.'
+      : null;
+    return { engagement, community, ratings, score, level, warning };
+  }, [effectiveRole]);
+
   const featureMap = useMemo(() => ({
     admin: [
-      { titleKey: 'admin.features.privileges', descKey: 'admin.features.privileges_desc' },
-      { titleKey: 'admin.features.platformDashboard', descKey: 'admin.features.platformDashboard_desc' },
-      { titleKey: 'admin.features.userManager', descKey: 'admin.features.userManager_desc' },
-      { titleKey: 'admin.features.services', descKey: 'admin.features.services_desc' },
-      { titleKey: 'admin.features.integrations', descKey: 'admin.features.integrations_desc' },
-      { titleKey: 'admin.features.aiRequests', descKey: 'admin.features.aiRequests_desc' },
+      { titleKey: 'admin.features.governance', descKey: 'admin.features.governance_desc' },
+      { titleKey: 'admin.features.ecosystem', descKey: 'admin.features.ecosystem_desc' },
+      { titleKey: 'admin.features.quality', descKey: 'admin.features.quality_desc' },
+      { titleKey: 'admin.features.partners', descKey: 'admin.features.partners_desc' },
+      { titleKey: 'admin.features.insights', descKey: 'admin.features.insights_desc' },
     ],
-    community_admin: [
-      { titleKey: 'community.features.dashboard', descKey: 'community.features.dashboard_desc' },
-      { titleKey: 'community.features.subscriptions', descKey: 'community.features.subscriptions_desc' },
-      { titleKey: 'community.features.marketing', descKey: 'community.features.marketing_desc' },
-      { titleKey: 'community.features.vetting', descKey: 'community.features.vetting_desc' },
+    manager: [
+      { titleKey: 'manager.features.castings', descKey: 'manager.features.castings_desc' },
+      { titleKey: 'manager.features.workflow', descKey: 'manager.features.workflow_desc' },
+      { titleKey: 'manager.features.portfolios', descKey: 'manager.features.portfolios_desc' },
+      { titleKey: 'manager.features.team', descKey: 'manager.features.team_desc' },
     ],
     moderator: [
-      { titleKey: 'moderator.features.journey', descKey: 'moderator.features.journey_desc' },
-      { titleKey: 'moderator.features.opportunities', descKey: 'moderator.features.opportunities_desc' },
-      { titleKey: 'moderator.features.issues', descKey: 'moderator.features.issues_desc' },
-      { titleKey: 'moderator.features.qa', descKey: 'moderator.features.qa_desc' },
-      { titleKey: 'moderator.features.impersonate', descKey: 'moderator.features.impersonate_desc' },
-    ],
-    brand: [
-      { titleKey: 'brand.features.showcase', descKey: 'brand.features.showcase_desc' },
-      { titleKey: 'brand.features.partnerships', descKey: 'brand.features.partnerships_desc' },
-      { titleKey: 'brand.features.analytics', descKey: 'brand.features.analytics_desc' },
+      { titleKey: 'moderator.features.review', descKey: 'moderator.features.review_desc' },
+      { titleKey: 'moderator.features.rights', descKey: 'moderator.features.rights_desc' },
+      { titleKey: 'moderator.features.safety', descKey: 'moderator.features.safety_desc' },
+      { titleKey: 'moderator.features.feedback', descKey: 'moderator.features.feedback_desc' },
     ],
     premium: [
-      { titleKey: 'premium.features.highlights', descKey: 'premium.features.highlights_desc' },
-      { titleKey: 'premium.features.topFive', descKey: 'premium.features.topFive_desc' },
-      { titleKey: 'premium.features.modules', descKey: 'premium.features.modules_desc' },
-      { titleKey: 'premium.features.subscriptions', descKey: 'premium.features.subscriptions_desc' },
-      { titleKey: 'premium.features.chatbox', descKey: 'premium.features.chatbox_desc' },
-      { titleKey: 'premium.features.aiPrompt', descKey: 'premium.features.aiPrompt_desc' },
+      { titleKey: 'premium.features.portfolio', descKey: 'premium.features.portfolio_desc' },
+      { titleKey: 'premium.features.castings', descKey: 'premium.features.castings_desc' },
+      { titleKey: 'premium.features.bookings', descKey: 'premium.features.bookings_desc' },
+      { titleKey: 'premium.features.analytics', descKey: 'premium.features.analytics_desc' },
+      { titleKey: 'premium.features.visibility', descKey: 'premium.features.visibility_desc' },
     ],
     free: [
-      { titleKey: 'free.features.limited', descKey: 'free.features.limited_desc' },
+      { titleKey: 'free.features.starter', descKey: 'free.features.starter_desc' },
+      { titleKey: 'free.features.applications', descKey: 'free.features.applications_desc' },
+    ],
+    demo: [
+      { titleKey: 'demo.features.tour', descKey: 'demo.features.tour_desc' },
+      { titleKey: 'demo.features.preview', descKey: 'demo.features.preview_desc' },
     ],
   }), []);
 
   useEffect(() => {
     fetchUserData();
     fetchWorkspace();
+    fetchChatMessages('community');
+    fetchChatMessages('moderator');
+    if (isUserTier) {
+      fetchPortfolio();
+    }
   }, []);
+
+  useEffect(() => {
+    if (!chatOpen) return;
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [channelMessages, chatOpen]);
 
   useEffect(() => {
     if (!workspace && userData) {
@@ -90,11 +152,10 @@ export default function Dashboard({ user, onLogout }) {
   useEffect(() => {
     const body = document.body;
     body.classList.remove(
-      'theme-clear-sky',
-      'theme-night-shade',
-      'theme-corporate',
-      'theme-techie',
-      'theme-disney'
+      'theme-aura',
+      'theme-atelier',
+      'theme-ivory',
+      'theme-noir'
     );
     if (theme) {
       body.classList.add(`theme-${theme}`);
@@ -146,6 +207,48 @@ export default function Dashboard({ user, onLogout }) {
     }
   };
 
+  const fetchChatMessages = async (channel) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiBaseUrl}/v1/chat/messages?channel=${channel}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMessages((prev) => {
+          const merged = [...prev];
+          data.forEach((msg) => {
+            if (!merged.find((existing) => existing.id === msg.id)) {
+              merged.push(msg);
+            }
+          });
+          return merged.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch chat messages:', err);
+    }
+  };
+
+  const fetchPortfolio = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiBaseUrl}/v1/portfolio/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAssets(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch portfolio:', err);
+    }
+  };
+
   const handleThemeChange = async (nextTheme) => {
     setTheme(nextTheme);
     try {
@@ -163,6 +266,103 @@ export default function Dashboard({ user, onLogout }) {
     }
   };
 
+  const handleSendMessage = () => {
+    if (!chatInput.trim()) return;
+    sendMessage(chatTarget, chatInput.trim());
+    setChatInput('');
+  };
+
+  const sendMessage = async (channel, content) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiBaseUrl}/v1/chat/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ channel, content }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMessages((prev) => (prev.find((msg) => msg.id === data.id) ? prev : [...prev, data]));
+      }
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const base = apiBaseUrl.startsWith('http')
+      ? apiBaseUrl
+      : `${window.location.origin}${apiBaseUrl}`;
+    const wsUrl = base.replace(/^http/, 'ws') + `/v1/chat/ws?token=${token}`;
+    let socket;
+    let poller;
+    try {
+      socket = new WebSocket(wsUrl);
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          setMessages((prev) => {
+            if (prev.find((msg) => msg.id === data.id)) return prev;
+            return [...prev, data];
+          });
+        } catch (err) {
+          console.error('Failed to parse websocket message', err);
+        }
+      };
+      socket.onerror = () => {
+        poller = setInterval(() => {
+          fetchChatMessages('community');
+          fetchChatMessages('moderator');
+        }, 5000);
+      };
+    } catch (err) {
+      poller = setInterval(() => {
+        fetchChatMessages('community');
+        fetchChatMessages('moderator');
+      }, 5000);
+    }
+
+    return () => {
+      if (socket) socket.close();
+      if (poller) clearInterval(poller);
+    };
+  }, [apiBaseUrl]);
+
+  const handleUpload = async (event) => {
+    const files = Array.from(event.target.files || []);
+    if (!files.length) return;
+    setUploading(true);
+    try {
+      const token = localStorage.getItem('token');
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${apiBaseUrl}/v1/portfolio/upload`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setAssets((prev) => [data, ...prev]);
+        }
+      }
+      await fetchPortfolio();
+    } catch (err) {
+      console.error('Upload failed:', err);
+    } finally {
+      setUploading(false);
+      event.target.value = '';
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -172,18 +372,19 @@ export default function Dashboard({ user, onLogout }) {
   return (
     <div className="dashboard-container">
       <div className="hero-section">
-        <video
-          className="hero-video"
-          autoPlay
-          loop
-          muted
-          poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600'%3E%3Crect fill='%23000' width='1200' height='600'/%3E%3C/svg%3E"
-        >
-          <source src="https://storage.coverr.co/videos/coverr-typing-on-a-laptop-1586/1080p.mp4" type="video/mp4" />
-        </video>
+        <div className="hero-video-wrapper">
+          <iframe
+            className="hero-video"
+            src="https://www.youtube.com/embed/yo6GklFH2sg?autoplay=1&mute=1&loop=1&playlist=yo6GklFH2sg&controls=0&modestbranding=1&rel=0&playsinline=1"
+            title="KCD Workspace Hero"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-title">{t('dashboard.welcome')}, {userData?.full_name || 'Utilisateur'}!</h1>
+          <p className="hero-eyebrow">{t('dashboard.eyebrow')}</p>
+          <h1 className="hero-title">{t('dashboard.welcome')}, {userData?.full_name || 'Utilisateur'}.</h1>
           <p className="hero-subtitle">{t('dashboard.subtitle')}</p>
         </div>
       </div>
@@ -213,6 +414,22 @@ export default function Dashboard({ user, onLogout }) {
           >
             🎯 {t('dashboard.workspaces')}
           </button>
+          {isUserTier && (
+            <button
+              className={`nav-tab ${activeTab === 'gamification' ? 'active' : ''}`}
+              onClick={() => setActiveTab('gamification')}
+            >
+              ⭐ Gamification
+            </button>
+          )}
+          {isUserTier && (
+            <button
+              className={`nav-tab ${activeTab === 'portfolio' ? 'active' : ''}`}
+              onClick={() => setActiveTab('portfolio')}
+            >
+              📸 Portfolio Book
+            </button>
+          )}
           <button
             className={`nav-tab ${activeTab === 'analytics' ? 'active' : ''}`}
             onClick={() => setActiveTab('analytics')}
@@ -268,6 +485,81 @@ export default function Dashboard({ user, onLogout }) {
           </div>
         )}
 
+        {activeTab === 'gamification' && isUserTier && (
+          <div className="gamification-section">
+            <div className="section-header">
+              <h3>Gamification</h3>
+            </div>
+            <div className="gamification-summary">
+              <div className="level-card">
+                <span>Niveau</span>
+                <strong>{gamification.level}/10</strong>
+              </div>
+              <div className="level-card">
+                <span>Score global</span>
+                <strong>{gamification.score}</strong>
+              </div>
+              <div className="level-card">
+                <span>Accès services</span>
+                <strong>{gamification.level >= 7 ? 'Étendu' : gamification.level >= 4 ? 'Standard' : 'Restreint'}</strong>
+              </div>
+            </div>
+            <div className="kpi-grid">
+              <div className="kpi-card">
+                <h4>Engagement plateforme</h4>
+                <p>{gamification.engagement}%</p>
+              </div>
+              <div className="kpi-card">
+                <h4>Communauté</h4>
+                <p>{gamification.community}%</p>
+              </div>
+              <div className="kpi-card">
+                <h4>Notes missions</h4>
+                <p>{gamification.ratings}%</p>
+              </div>
+            </div>
+            {gamification.warning && (
+              <div className="kpi-warning">{gamification.warning}</div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'portfolio' && isUserTier && (
+          <div className="portfolio-section">
+            <div className="section-header">
+              <div>
+                <h3>Portfolio Book</h3>
+                <p className="workspace-subtitle">Ajoutez vos images et vidéos, visibles instantanément.</p>
+              </div>
+              <label className="upload-button">
+                {uploading ? 'Upload...' : 'Ajouter'}
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={handleUpload}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+            <div className="portfolio-grid">
+              {assets.length === 0 && (
+                <div className="portfolio-empty">Aucun média pour le moment.</div>
+              )}
+              {resolvedAssets.map((asset) => (
+                <div key={asset.id} className="portfolio-item">
+                  <span className="asset-tag">{asset.file_type}</span>
+                  {asset.file_type === 'video' ? (
+                    <video src={asset.resolvedUrl} muted loop autoPlay playsInline controls />
+                  ) : (
+                    <img src={asset.resolvedUrl} alt="Portfolio" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'analytics' && (
           <div className="analytics-section">
             <div className="section-header">
@@ -303,12 +595,6 @@ export default function Dashboard({ user, onLogout }) {
           <div className="settings-section">
             <div className="section-header">
               <h3>{t('settings.title')}</h3>
-            </div>
-
-            <div className="settings-card theme-card">
-              <h4>{t('settings.themeSelector')}</h4>
-              <p>{t('settings.themeSelectorDesc')}</p>
-              <ThemeSelector currentTheme={theme} onThemeChange={handleThemeChange} />
             </div>
 
             <div className="settings-grid">
@@ -365,8 +651,83 @@ export default function Dashboard({ user, onLogout }) {
         )}
       </div>
 
-      <div className="theme-selector-bar">
-        <ThemeSelector currentTheme={theme} onThemeChange={handleThemeChange} />
+      <div className={`chat-panel ${chatOpen ? '' : 'collapsed'}`}>
+        {chatOpen ? (
+          <>
+            <div className="chat-header">
+              <div className="chat-header-top">
+                <div>
+                  <h4>Salon KCD</h4>
+                  <p className="chat-subtitle">
+                    {chatTarget === 'community' ? 'Discussion entre talents' : 'Canal avec le modérateur'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="chat-collapse-button"
+                  onClick={() => setChatOpen(false)}
+                  aria-label="Réduire le chat"
+                >
+                  —
+                </button>
+              </div>
+              <div className="chat-toggle">
+                <button
+                  type="button"
+                  className={chatTarget === 'community' ? 'active' : ''}
+                  onClick={() => setChatTarget('community')}
+                >
+                  Communauté
+                </button>
+                <button
+                  type="button"
+                  className={chatTarget === 'moderator' ? 'active' : ''}
+                  onClick={() => setChatTarget('moderator')}
+                >
+                  Modérateur
+                </button>
+              </div>
+            </div>
+            <div className="chat-body">
+              {channelMessages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`chat-message ${message.user_id === userData?.id ? 'own' : ''}`}
+                >
+                  <div className="chat-meta">
+                    <span className="chat-user">
+                      {message.user_id === userData?.id ? 'Vous' : (message.user_name || message.from || 'Anonyme')}
+                    </span>
+                    <span className="chat-time">{formatChatTime(message.created_at) || message.timestamp}</span>
+                  </div>
+                  <p>{message.content}</p>
+                </div>
+              ))}
+              <div ref={chatEndRef} />
+            </div>
+            <div className="chat-input">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(event) => setChatInput(event.target.value)}
+                placeholder="Écrivez un message..."
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') handleSendMessage();
+                }}
+              />
+              <button type="button" onClick={handleSendMessage}>Envoyer</button>
+            </div>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="chat-collapsed"
+            onClick={() => setChatOpen(true)}
+          >
+            <strong>Chat KCD</strong>
+            <span>{lastMessagePreview}</span>
+          </button>
+        )}
       </div>
     </div>
   );

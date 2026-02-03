@@ -4,6 +4,7 @@ import SplashScreen from './components/SplashScreen';
 import LoginPage from './components/LoginPage';
 import HomeScreen from './components/HomeScreen';
 import Dashboard from './components/Dashboard';
+import Footer from './components/Footer';
 import './App.css';
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
     const storedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
     
-    if (storedUser && token) {
+    if (storedUser && storedUser !== 'undefined' && storedUser !== 'null' && token) {
       try {
         setUser(JSON.parse(storedUser));
         setCurrentPage('dashboard');
@@ -59,23 +60,28 @@ function App() {
     return <div className="loading-screen">{t('app.tagline')}</div>;
   }
 
+  const showFooter = currentPage !== 'splash';
+
   return (
     <div className="app">
-      {currentPage === 'splash' && (
-        <SplashScreen onComplete={handleSplashComplete} />
-      )}
-      
-      {currentPage === 'home' && (
-        <HomeScreen onLoginClick={handleLoginClick} />
-      )}
-      
-      {currentPage === 'login' && (
-        <LoginPage onLogin={handleLogin} />
-      )}
-      
-      {currentPage === 'dashboard' && user && (
-        <Dashboard user={user} onLogout={handleLogout} />
-      )}
+      <main className="app-main">
+        {currentPage === 'splash' && (
+          <SplashScreen onComplete={handleSplashComplete} />
+        )}
+        
+        {currentPage === 'home' && (
+          <HomeScreen onLoginClick={handleLoginClick} />
+        )}
+        
+        {currentPage === 'login' && (
+          <LoginPage onLogin={handleLogin} />
+        )}
+        
+        {currentPage === 'dashboard' && user && (
+          <Dashboard user={user} onLogout={handleLogout} />
+        )}
+      </main>
+      {showFooter && <Footer />}
     </div>
   );
 }

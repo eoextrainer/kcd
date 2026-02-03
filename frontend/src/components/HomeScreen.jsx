@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './HomeScreen.css';
 
@@ -17,19 +17,67 @@ const buildEmbedUrl = (url) => {
   return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&fs=0&loop=1&playlist=${id}`;
 };
 
-const VideoTile = ({ title, subtitle, url }) => (
-  <div className="video-tile">
-    <div className="video-frame">
-      <iframe
-        className="tile-video"
-        src={buildEmbedUrl(url)}
-        title={title}
-        allow="autoplay; encrypted-media; picture-in-picture"
-        allowFullScreen
-      />
+const VideoCarousel = ({ title, subtitle, videos }) => {
+  const [index, setIndex] = useState(0);
+  const total = videos.length;
+  const current = buildEmbedUrl(videos[index]);
+
+  const handleNext = () => setIndex((prev) => (prev + 1) % total);
+  const handlePrev = () => setIndex((prev) => (prev - 1 + total) % total);
+
+  return (
+    <div className="carousel">
+      <div className="carousel-header">
+        <div>
+          <h2>{title}</h2>
+          {subtitle && <p>{subtitle}</p>}
+        </div>
+      </div>
+      <div className="carousel-frame">
+        <button
+          type="button"
+          className="carousel-nav prev"
+          onClick={handlePrev}
+          aria-label="Previous"
+        >
+          ‹
+        </button>
+        <iframe
+          className="carousel-video"
+          key={current}
+          src={current}
+          title={title}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
+        <button
+          type="button"
+          className="carousel-nav next"
+          onClick={handleNext}
+          aria-label="Next"
+        >
+          ›
+        </button>
+      </div>
     </div>
-    <div className="tile-caption">
-      <h3>{title}</h3>
+  );
+};
+
+const modelImageMap = import.meta.glob('../../../tmp/models/*.{webp,png,jpg,jpeg}', {
+  eager: true,
+  as: 'url',
+});
+const modelImages = Object.entries(modelImageMap)
+  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+  .map(([, url]) => url);
+
+const SpotlightCard = ({ name, subtitle, imageUrl }) => (
+  <div className="spotlight-card">
+    <div className="spotlight-image">
+      <img src={imageUrl} alt={name} loading="lazy" />
+    </div>
+    <div className="spotlight-copy">
+      <h3>{name}</h3>
       <p>{subtitle}</p>
     </div>
   </div>
@@ -38,54 +86,54 @@ const VideoTile = ({ title, subtitle, url }) => (
 export default function HomeScreen({ onLoginClick }) {
   const { t } = useTranslation();
   const [navOpen, setNavOpen] = useState(false);
-  const [heroIndex, setHeroIndex] = useState(0);
+  const spotlightModels = useMemo(
+    () =>
+      modelImages.map((_, index) =>
+        `Modèle ${String(index + 1).padStart(2, '0')}`
+      ),
+    []
+  );
 
-  const heroVideos = useMemo(
+  const heroVideo = 'https://www.youtube.com/watch?v=5Tc4ruN1xR8&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr';
+
+  const eventsVideos = useMemo(
     () => [
-      'https://www.youtube.com/watch?v=7KleXMtVBSs',
-      'https://www.youtube.com/watch?v=m5FPAvHLEVM',
-      'https://www.youtube.com/watch?v=5aFWNrRG7qw',
-      'https://www.youtube.com/watch?v=J1GCDcbYIRI',
-      'https://www.youtube.com/watch?v=WK5GbfGULpk',
+      'https://www.youtube.com/watch?v=5D0i7mtlqLs&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
+      'https://www.youtube.com/watch?v=Nq-taA3DQEE&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
+      'https://www.youtube.com/watch?v=CwmKr-wkj1M&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr2AYL',
+      'https://www.youtube.com/watch?v=HfJgt9oEXms&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
+      'https://www.youtube.com/watch?v=vK3Jq8AJO5s&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
+      'https://www.youtube.com/watch?v=25956Au5n8Y&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
+      'https://www.youtube.com/watch?v=6eCl9q2x77U&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
     ],
     []
   );
 
-  const featuredEvents = useMemo(
+  const creatorsVideos = useMemo(
     () => [
-      'https://www.youtube.com/watch?v=B3dl7nCEO2c',
-      'https://www.youtube.com/watch?v=afbCCkgVGHY',
-      'https://www.youtube.com/watch?v=qYaDIZE8o-A',
+      'https://www.youtube.com/watch?v=W-lPWow1lz8&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz0gcJCZEKAYcqIYzv',
+      'https://www.youtube.com/watch?v=pDnNcktioxc&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=N175V2OK3K0&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=hoKDrFyQDy0&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=A0uAr8H1dWU&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=OFb4IFpZdx0&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=y6NGVqahOOE&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
     ],
     []
   );
 
-  const featuredCreators = useMemo(
+  const talentsVideos = useMemo(
     () => [
-      'https://www.youtube.com/watch?v=3MeQlr0wSAs',
-      'https://www.youtube.com/watch?v=zxw-_OFwb7o',
-      'https://www.youtube.com/watch?v=lRL24v3syCk',
+      'https://www.youtube.com/watch?v=cFIu-rPe9Pg&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=afbCCkgVGHY&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=DlKsYHC8QAw&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
+      'https://www.youtube.com/watch?v=UYDrMA16248&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz0gcJCZEKAYcqIYzv',
+      'https://www.youtube.com/watch?v=QPuH-2YXv_A&pp=ygUbZmFzaGlvbiBtb2RlbGxpbmcgZGVzaWduZXJz',
     ],
     []
   );
 
-  const featuredTalents = useMemo(
-    () => [
-      'https://www.youtube.com/watch?v=CwmKr-wkj1M',
-      'https://www.youtube.com/watch?v=HgTSS7Lgw3M',
-      'https://www.youtube.com/watch?v=GsyTVrbgfYI',
-    ],
-    []
-  );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % heroVideos.length);
-    }, 15000);
-    return () => clearInterval(interval);
-  }, [heroVideos.length]);
-
-  const heroVideoUrl = buildEmbedUrl(heroVideos[heroIndex]);
+  const universeVideos = useMemo(() => [heroVideo], [heroVideo]);
 
   return (
     <div className="home-screen">
@@ -106,9 +154,10 @@ export default function HomeScreen({ onLoginClick }) {
         </button>
 
         <ul className={`nav-menu ${navOpen ? 'active' : ''}`}>
-          <li><a href="#explore">{t('navigation.explore')}</a></li>
-          <li><a href="#creators">{t('navigation.creators')}</a></li>
-          <li><a href="#about">{t('navigation.about')}</a></li>
+          <li><a href="#evenements">{t('navigation.events')}</a></li>
+          <li><a href="#createurs">{t('navigation.creators')}</a></li>
+          <li><a href="#talents">{t('navigation.talents')}</a></li>
+          <li><a href="#univers">{t('navigation.universe')}</a></li>
           <li>
             <button
               className="nav-login-btn"
@@ -121,12 +170,11 @@ export default function HomeScreen({ onLoginClick }) {
         </ul>
       </nav>
 
-      <section className="hero-section" id="explore">
+      <section className="hero-section" id="hero">
         <div className="hero-video-wrapper">
           <iframe
             className="hero-video"
-            key={heroVideoUrl}
-            src={heroVideoUrl}
+            src={buildEmbedUrl(heroVideo)}
             title="KCD Hero"
             allow="autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
@@ -134,58 +182,69 @@ export default function HomeScreen({ onLoginClick }) {
         </div>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-title">{t('home.discover')}</h1>
-          <button className="cta-button" onClick={onLoginClick} type="button">
-            {t('home.getStarted')}
-          </button>
+          <p className="hero-eyebrow">{t('home.heroEyebrow')}</p>
+          <h1 className="hero-title">{t('home.heroTitle')}</h1>
+          <p className="hero-subtitle">{t('home.heroSubtitle')}</p>
+          <div className="hero-actions">
+            <button className="cta-button" onClick={onLoginClick} type="button">
+              {t('home.getStarted')}
+            </button>
+            <button className="ghost-button" type="button">
+              {t('home.exploreBook')}
+            </button>
+          </div>
         </div>
       </section>
 
-      <section className="featured-section" id="events">
-        <h2>{t('sections.featuredEvents')}</h2>
-        <div className="tiles-grid">
-          {featuredEvents.map((video, index) => (
-            <VideoTile
-              key={video}
-              url={video}
-              title={`${t('labels.event')} ${index + 1}`}
-              subtitle={t('labels.specializing')}
+      <section className="spotlight-section" id="spotlight-grid">
+        <div className="section-heading">
+          <h2>{t('sections.spotlight')}</h2>
+          <p>{t('sections.spotlightSubtitle')}</p>
+        </div>
+        <div className="spotlight-grid">
+          {spotlightModels.map((name, index) => (
+            <SpotlightCard
+              key={modelImages[index]}
+              name={name}
+              subtitle={t('labels.featuredRole')}
+              imageUrl={modelImages[index]}
             />
           ))}
         </div>
       </section>
 
-      <section className="featured-section" id="creators">
-        <h2>{t('sections.featuredCreators')}</h2>
-        <div className="tiles-grid">
-          {featuredCreators.map((video, index) => (
-            <VideoTile
-              key={video}
-              url={video}
-              title={`${t('labels.creator')} ${index + 1}`}
-              subtitle={t('labels.specializing')}
-            />
-          ))}
-        </div>
+      <section className="carousel-section" id="evenements">
+        <VideoCarousel
+          title={t('sections.events')}
+          subtitle={t('sections.eventsSubtitle')}
+          videos={eventsVideos}
+        />
       </section>
 
-      <section className="featured-section" id="talents">
-        <h2>{t('sections.featuredTalents')}</h2>
-        <div className="tiles-grid">
-          {featuredTalents.map((video, index) => (
-            <VideoTile
-              key={video}
-              url={video}
-              title={`${t('labels.talent')} ${index + 1}`}
-              subtitle={t('labels.specializing')}
-            />
-          ))}
-        </div>
+      <section className="carousel-section" id="createurs">
+        <VideoCarousel
+          title={t('sections.creators')}
+          subtitle={t('sections.creatorsSubtitle')}
+          videos={creatorsVideos}
+        />
       </section>
 
-      <footer className="home-footer" id="about">
-        <p>&copy; 2026 {t('app.title')}</p>
-      </footer>
+      <section className="carousel-section" id="talents">
+        <VideoCarousel
+          title={t('sections.talents')}
+          subtitle={t('sections.talentsSubtitle')}
+          videos={talentsVideos}
+        />
+      </section>
+
+      <section className="carousel-section" id="univers">
+        <VideoCarousel
+          title={t('sections.universe')}
+          subtitle={t('sections.universeCopy')}
+          videos={universeVideos}
+        />
+      </section>
+
     </div>
   );
 }

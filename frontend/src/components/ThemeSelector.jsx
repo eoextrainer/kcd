@@ -4,24 +4,24 @@ import './ThemeSelector.css';
 
 const THEMES = [
   {
-    id: 'clear-sky',
-    labelKey: 'themes.clearSky',
-    descriptionKey: 'themes.clearSkyDesc',
+    id: 'aura',
+    labelKey: 'themes.aura',
+    descriptionKey: 'themes.auraDesc',
   },
   {
-    id: 'night-shade',
-    labelKey: 'themes.nightShade',
-    descriptionKey: 'themes.nightShadeDesc',
+    id: 'atelier',
+    labelKey: 'themes.atelier',
+    descriptionKey: 'themes.atelierDesc',
   },
   {
-    id: 'corporate',
-    labelKey: 'themes.corporate',
-    descriptionKey: 'themes.corporateDesc',
+    id: 'ivory',
+    labelKey: 'themes.ivory',
+    descriptionKey: 'themes.ivoryDesc',
   },
   {
-    id: 'techie',
-    labelKey: 'themes.techie',
-    descriptionKey: 'themes.techieDesc',
+    id: 'noir',
+    labelKey: 'themes.noir',
+    descriptionKey: 'themes.noirDesc',
   },
 ];
 

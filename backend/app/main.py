@@ -2,13 +2,18 @@
 KCD Application - FastAPI main application entry point
 """
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
+import asyncio
 from dotenv import load_dotenv
 from pathlib import Path
+from sqlalchemy import text
 
 from app.api import auth, users, workspaces
+from app.api import chat, portfolio
+from app.db.database import init_db, SessionLocal
 
 # Load environment variables
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -35,6 +40,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+async def self_heal_loop():
+    """Best-effort self-healing loop to keep core services ready."""
+    while True:
+        try:
+            init_db()
+            with SessionLocal() as db:
+                db.execute(text("SELECT 1"))
+            UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:
+            print(f"Self-heal check failed: {exc}")
+        await asyncio.sleep(10)
 
 # Health check endpoint
 @app.get("/api/v1/health")
@@ -72,6 +89,17 @@ async def api_root():
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(workspaces.router)
+app.include_router(chat.router)
+app.include_router(portfolio.router)
+
+# Static uploads
+UPLOAD_DIR = ROOT_DIR / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
+
+@app.on_event("startup")
+async def start_self_heal():
+    asyncio.create_task(self_heal_loop())
 
 # Error handlers
 @app.exception_handler(Exception)

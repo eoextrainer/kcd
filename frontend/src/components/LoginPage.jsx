@@ -11,6 +11,27 @@ export default function LoginPage({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const safeParseJson = async (response) => {
+    const text = await response.text();
+    if (!text) {
+      return null;
+    }
+    try {
+      return JSON.parse(text);
+    } catch (parseError) {
+      return null;
+    }
+  };
+
+  const credentials = [
+    { label: 'Sys Admin', email: 'admin@kcd-agency.com', password: 'admin123' },
+    { label: 'Platform Admin', email: 'manager@kcd-agency.com', password: 'manager123' },
+    { label: 'Moderator', email: 'moderator@kcd-agency.com', password: 'moderator123' },
+    { label: 'Premium User', email: 'user1@kcd-agency.com', password: 'user1premium' },
+    { label: 'Normal User', email: 'user2@kcd-agency.com', password: 'user2normal' },
+    { label: 'Demo User', email: 'demo@kcd-agency.com', password: 'demo123' },
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -29,12 +50,15 @@ export default function LoginPage({ onLogin }) {
         }),
       });
 
+      const data = await safeParseJson(response);
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || t('errors.invalidCredentials'));
+        throw new Error(data?.detail || t('errors.invalidCredentials'));
       }
 
-      const data = await response.json();
+      if (!data) {
+        throw new Error(t('errors.loginFailed'));
+      }
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -58,15 +82,48 @@ export default function LoginPage({ onLogin }) {
     }
   };
 
-  const handleDemoLogin = () => {
-    const demoUser = {
-      id: '1',
-      email: 'demo@kcd.com',
-      name: 'Demo User',
-      role: 'user',
-    };
-    localStorage.setItem('user', JSON.stringify(demoUser));
-    onLogin(demoUser);
+  const handleDemoLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const apiBaseUrl = getApiBaseUrl();
+      const response = await fetch(`${apiBaseUrl}/v1/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: 'demo@kcd-agency.com',
+          password: 'demo123',
+        }),
+      });
+
+      const data = await safeParseJson(response);
+
+      if (!response.ok) {
+        throw new Error(data?.detail || t('errors.invalidCredentials'));
+      }
+
+      if (!data) {
+        throw new Error(t('errors.loginFailed'));
+      }
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      onLogin({
+        id: data.user.id,
+        email: data.user.email,
+        full_name: data.user.full_name,
+        role: data.user.role,
+        subscription_tier: data.user.subscription_tier,
+      });
+    } catch (err) {
+      const messageText = err?.message || '';
+      const message = messageText || t('errors.loginFailed');
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -143,6 +200,20 @@ export default function LoginPage({ onLogin }) {
           >
             {t('login.demo')}
           </button>
+
+          <div className="credentials-panel">
+            <h4>Identifiants</h4>
+            <p>Utilisez ces comptes pour vous connecter.</p>
+            <ul>
+              {credentials.map((item) => (
+                <li key={item.email}>
+                  <strong>{item.label}</strong>
+                  <span>{item.email}</span>
+                  <span>{item.password}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div className="login-footer">
             <p>{t('login.footer')} <span className="signup-link">{t('login.signup')}</span></p>

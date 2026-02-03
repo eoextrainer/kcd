@@ -16,8 +16,15 @@ html, body, #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #0f0f0f;
-  color: #fff;
+  background: var(--aura-cream);
+  color: var(--aura-ink);
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--aura-cream);
 }
 
 .loading-screen {
@@ -26,10 +33,10 @@ html, body, #root {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 600;
+  background: linear-gradient(135deg, #f6f1ea 0%, #efe5d7 100%);
+  color: var(--aura-ink);
+  font-size: 1.25rem;
+  font-weight: 500;
 }
 
 /* Smooth transitions between pages */

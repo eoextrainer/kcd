@@ -1,22 +1,27 @@
 {
   "app": {
-    "title": "KCD — La mode à votre portée",
-    "tagline": "Découvrez l'excellence créative"
+    "title": "KCD — L’écosystème du mannequinat",
+    "tagline": "Créez votre identité digitale"
   },
   "splash": {
-    "skip": "Passer"
+    "skip": "Passer",
+    "enter": "Entrer"
   },
   "home": {
     "title": "Bienvenue chez KCD",
-    "subtitle": "Découvrez l'excellence créative",
+    "subtitle": "L’espace éditorial des mannequins et talents",
     "cta": "Commencer",
     "login": "Se connecter",
     "discover": "Découvrez l'excellence créative",
-    "getStarted": "Commencer"
+    "getStarted": "Créer mon book",
+    "heroEyebrow": "UNE IDENTITÉ DIGITALE",
+    "heroTitle": "Votre book, votre image, votre empreinte.",
+    "heroSubtitle": "Créez un book raffiné, gérez vos castings et connectez-vous à des partenaires de confiance.",
+    "exploreBook": "Explorer l’écosystème"
   },
   "login": {
     "title": "Connexion",
-    "tagline": "Vivez l'excellence",
+    "tagline": "Accédez à votre atelier",
     "email": "Adresse e‑mail",
     "password": "Mot de passe",
     "signin": "Se connecter",
@@ -26,12 +31,12 @@
     "or": "ou",
     "footer": "Vous n’avez pas de compte ?",
     "welcome": "Bienvenue chez KCD",
-    "welcome_subtitle": "Votre plateforme d’excellence pour la transformation digitale",
+    "welcome_subtitle": "Un espace soigné pour book et castings",
     "features": {
-      "analytics": "Analytique avancée",
-      "insights": "Insights en temps réel",
-      "security": "Sécurité entreprise",
-      "access": "Accès multiplateforme"
+      "analytics": "Analytique des castings",
+      "insights": "Insights portfolio",
+      "security": "Partenaires vérifiés",
+      "access": "Accès mobile"
     }
   },
   "navigation": {
@@ -39,40 +44,60 @@
     "explore": "Explorer",
     "creators": "Créateurs",
     "about": "À propos",
+    "events": "Nos Evenements",
+    "creators": "Nos Createurs",
+    "talents": "Nos Talents",
+    "universe": "l'univers KCD",
+    "discover": "Découvrir",
     "dashboard": "Tableau de bord",
     "logout": "Se déconnecter",
     "profile": "Profil",
     "settings": "Paramètres"
   },
   "themes": {
-    "clearSky": "Ciel clair",
-    "clearSkyDesc": "Inspiré par Google Play",
-    "nightShade": "Ombre nocturne",
-    "nightShadeDesc": "Inspiré par Netflix",
-    "corporate": "Corporate",
-    "corporateDesc": "Inspiré par Salesforce",
-    "techie": "Techie",
-    "techieDesc": "Inspiré par GitHub"
+    "aura": "Aura",
+    "auraDesc": "Palette éditoriale",
+    "atelier": "Atelier",
+    "atelierDesc": "Neutres de studio",
+    "ivory": "Ivoire",
+    "ivoryDesc": "Surfaces lumineuses",
+    "noir": "Noir",
+    "noirDesc": "Sophistication feutrée"
   },
   "roles": {
-    "admin": "Administrateur système",
-    "community_admin": "Administrateur communauté",
-    "moderator": "Modérateur communauté",
-    "brand": "Compte marque",
-    "premium": "Utilisateur premium",
-    "free": "Utilisateur gratuit"
+    "admin": "Admin système",
+    "manager": "Admin plateforme",
+    "moderator": "Modérateur plateforme",
+    "premium": "Mannequin premium",
+    "free": "Mannequin standard",
+    "demo": "Profil démo"
   },
   "sections": {
     "featuredEvents": "Événements en vedette",
     "featuredCreators": "Créateurs en vedette",
     "featuredTalents": "Talents en vedette",
-    "welcome": "Bienvenue chez KCD"
+    "welcome": "Bienvenue chez KCD",
+    "spotlight": "En vedette",
+    "spotlightSubtitle": "Une sélection de talents émergents et établis.",
+    "events": "Nos Evenements",
+    "eventsSubtitle": "Les défilés, shows et castings incontournables.",
+    "creators": "Nos Createurs",
+    "creatorsSubtitle": "Designers, directeurs artistiques et studios.",
+    "talents": "Nos Talents",
+    "talentsSubtitle": "Les talents qui définissent la saison.",
+    "universe": "L’univers KCD",
+    "universeCopy": "Au-delà d’un book, KCD relie vos castings, vos partenaires vérifiés et une présence digitale durable.",
+    "universeCta": "Créer mon book",
+    "discoverTalents": "Découvrez nos talents",
+    "discoverSubtitle": "Rencontrez les visages qui façonneront la prochaine saison.",
+    "discoverCta": "Explorer la sélection"
   },
   "labels": {
     "specializing": "Spécialisé en mode & design",
     "event": "Événement",
     "creator": "Créateur",
-    "talent": "Talent"
+    "talent": "Talent",
+    "featuredRole": "Talent éditorial & runway"
   },
   "cta": {
     "getStarted": "Commencer",
@@ -84,16 +109,16 @@
     "loginFailed": "Échec de la connexion. Veuillez réessayer."
   },
   "analytics": {
-    "title": "Analytique & insights"
+    "title": "Insights & bookings"
   },
   "stats": {
-    "activeUsers": "Utilisateurs actifs",
+    "activeUsers": "Talents actifs",
     "activeUsersChange": "↑ 12% ce mois-ci",
-    "projects": "Projets",
+    "projects": "Castings",
     "projectsChange": "↑ 3% ce mois-ci",
     "uptime": "Disponibilité",
     "uptimeStatus": "Excellent",
-    "userRating": "Note utilisateur"
+    "userRating": "Note partenaires"
   },
   "settings": {
     "title": "Paramètres du compte",
@@ -121,82 +146,77 @@
   },
   "admin": {
     "features": {
-      "privileges": "Contrôle de la plateforme & privilèges",
-      "privileges_desc": "Contrôler la plateforme et accorder des privilèges",
-      "platformDashboard": "Tableau de bord de performance",
-      "platformDashboard_desc": "Suivre les métriques et la disponibilité",
-      "userManager": "Gestionnaire d'utilisateurs",
-      "userManager_desc": "Gérer les interactions et comptes utilisateurs",
-      "services": "Gestion des services abonnés",
-      "services_desc": "Gérer tous les services souscrits",
-      "integrations": "Intégrations microservices",
-      "integrations_desc": "Autoriser les échanges de données externes",
-      "aiRequests": "Intelligence des demandes IA",
-      "aiRequests_desc": "Transformer les demandes en prompts IA"
+      "governance": "Gouvernance plateforme",
+      "governance_desc": "Superviser la conformité et les accès",
+      "ecosystem": "Supervision de l’écosystème",
+      "ecosystem_desc": "Coordonner partenaires et standards",
+      "quality": "Assurance qualité",
+      "quality_desc": "Protéger l’intégrité des profils",
+      "partners": "Réseau partenaires",
+      "partners_desc": "Gérer les partenaires vérifiés",
+      "insights": "Insights stratégiques",
+      "insights_desc": "Suivre la croissance et la performance"
     }
   },
-  "community": {
+  "manager": {
     "features": {
-      "dashboard": "Tableau de bord communauté",
-      "dashboard_desc": "Superviser les interactions des utilisateurs",
-      "subscriptions": "Gestion des abonnements",
-      "subscriptions_desc": "Gérer chaque abonnement utilisateur",
-      "marketing": "Campagnes marketing",
-      "marketing_desc": "Planifier et suivre les campagnes digitales",
-      "vetting": "Validation des demandes",
-      "vetting_desc": "Valider chaque demande de fonctionnalité"
+      "castings": "Orchestration des castings",
+      "castings_desc": "Planifier et piloter les cycles",
+      "workflow": "Workflow des bookings",
+      "workflow_desc": "Coordonner briefs et validations",
+      "portfolios": "Direction des portfolios",
+      "portfolios_desc": "Guider l’éditorial des talents",
+      "team": "Opérations d’équipe",
+      "team_desc": "Aligner scouts et coordinateurs"
     }
   },
   "moderator": {
     "features": {
-      "journey": "Tableau des moments forts",
-      "journey_desc": "Suivre l’engagement et l’expérience",
-      "opportunities": "Suivi des opportunités",
-      "opportunities_desc": "Recenser les opportunités de service",
-      "issues": "Suivi des incidents",
-      "issues_desc": "Suivre les problèmes signalés",
-      "qa": "Modération Q&R",
-      "qa_desc": "Modérer les retours, plaintes, demandes",
-      "impersonate": "Outil d’impersonation",
-      "impersonate_desc": "Vérifier l’expérience des utilisateurs"
-    }
-  },
-  "brand": {
-    "features": {
-      "showcase": "Vitrine de marque",
-      "showcase_desc": "Mettre en avant vos campagnes",
-      "partnerships": "Pôle partenariats",
-      "partnerships_desc": "Gérer collaborations et co‑branding",
-      "analytics": "Analytique de marque",
-      "analytics_desc": "Suivre la performance et l’audience"
+      "review": "Revue des contenus",
+      "review_desc": "Valider les books et éditoriaux",
+      "rights": "Droits d’image",
+      "rights_desc": "Suivre permissions et crédits",
+      "safety": "Standards de sécurité",
+      "safety_desc": "Maintenir un écosystème fiable",
+      "feedback": "File de retours",
+      "feedback_desc": "Traiter les demandes"
     }
   },
   "premium": {
     "features": {
-      "highlights": "Moments forts premium",
-      "highlights_desc": "Consommer des highlights personnalisés",
-      "topFive": "Top 5 favoris",
-      "topFive_desc": "Accéder aux 5 meilleurs modules",
-      "modules": "Modules premium",
-      "modules_desc": "Accéder aux modules par abonnement",
-      "subscriptions": "Gestion des abonnements",
-      "subscriptions_desc": "Gérer vos services actifs",
-      "chatbox": "Chatbox membres",
-      "chatbox_desc": "Échanger avec les membres",
-      "aiPrompt": "Prompt IA",
-      "aiPrompt_desc": "Demander de nouvelles fonctionnalités"
+      "portfolio": "Studio portfolio",
+      "portfolio_desc": "Composer vos éditoriaux",
+      "castings": "Invitations casting",
+      "castings_desc": "Répondre aux briefs exclusifs",
+      "bookings": "Bookings",
+      "bookings_desc": "Gérer vos placements",
+      "analytics": "Analytique performance",
+      "analytics_desc": "Suivre la portée",
+      "visibility": "Boost visibilité",
+      "visibility_desc": "Priorité dans les recherches"
     }
   },
   "free": {
     "features": {
-      "limited": "Accès limité",
-      "limited_desc": "Accès à certaines fonctionnalités sur durée limitée"
+      "starter": "Portfolio de départ",
+      "starter_desc": "Lancer votre identité digitale",
+      "applications": "Candidatures",
+      "applications_desc": "Suivre vos demandes"
+    }
+  },
+  "demo": {
+    "features": {
+      "tour": "Parcours guidé",
+      "tour_desc": "Explorer un espace exemple",
+      "preview": "Aperçu du book",
+      "preview_desc": "Visualiser votre futur book"
     }
   },
   "dashboard": {
-    "title": "Plateforme KCD",
+    "title": "Atelier KCD",
     "welcome": "Bienvenue",
-    "subtitle": "Vivez l'excellence en transformation digitale",
+    "eyebrow": "Votre espace",
+    "subtitle": "Créez, gérez et élevez votre présence mannequin",
     "workspaces": "Espaces de travail",
     "analytics": "Analytique",
     "settings": "Paramètres",
@@ -206,5 +226,18 @@
     "theme": "Thème",
     "widgets": "Widgets",
     "signOut": "Se déconnecter"
+  },
+  "footer": {
+    "about": "KCD — L’écosystème du mannequinat.",
+    "aboutSub": "Books digitaux, castings et partenaires vérifiés.",
+    "legal": "Mentions légales",
+    "legalNotice": "Mentions légales",
+    "terms": "Conditions d’utilisation",
+    "privacy": "Politique de confidentialité",
+    "social": "Réseaux sociaux",
+    "faq": "FAQ",
+    "faqLink": "Questions fréquentes",
+    "booking": "Comment réserver",
+    "services": "Nos services"
   }
 }

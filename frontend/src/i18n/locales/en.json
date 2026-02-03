@@ -1,22 +1,27 @@
 {
   "app": {
-    "title": "KCD — La mode à votre portée",
-    "tagline": "Discover Creative Excellence"
+    "title": "KCD — The Fashion Modeling Ecosystem",
+    "tagline": "Create your digital identity"
   },
   "splash": {
-    "skip": "Skip"
+    "skip": "Skip",
+    "enter": "Enter"
   },
   "home": {
     "title": "Welcome to KCD",
-    "subtitle": "Discover Creative Excellence",
+    "subtitle": "The editorial space for models and talent",
     "cta": "Get Started",
     "login": "Sign In",
     "discover": "Discover Creative Excellence",
-    "getStarted": "Get Started"
+    "getStarted": "Create My Book",
+    "heroEyebrow": "A DIGITAL IDENTITY",
+    "heroTitle": "Your portfolio, your image, your imprint.",
+    "heroSubtitle": "Build a refined personal book, manage castings, and connect with trusted fashion partners.",
+    "exploreBook": "Explore the ecosystem"
   },
   "login": {
     "title": "Sign In",
-    "tagline": "Experience Excellence",
+    "tagline": "Access your atelier",
     "email": "Email Address",
     "password": "Password",
     "signin": "Sign In",
@@ -26,12 +31,12 @@
     "or": "or",
     "footer": "Don't have an account?",
     "welcome": "Welcome to KCD",
-    "welcome_subtitle": "Your platform for excellence in digital transformation",
+    "welcome_subtitle": "A curated workspace for modeling portfolios and castings",
     "features": {
-      "analytics": "Advanced Analytics",
-      "insights": "Real-time Insights",
-      "security": "Enterprise Security",
-      "access": "Cross-platform Access"
+      "analytics": "Casting analytics",
+      "insights": "Portfolio insights",
+      "security": "Verified partnerships",
+      "access": "Mobile-first access"
     }
   },
   "navigation": {
@@ -39,40 +44,60 @@
     "explore": "Explore",
     "creators": "Creators",
     "about": "About",
+    "events": "Our Events",
+    "creators": "Our Creators",
+    "talents": "Our Talents",
+    "universe": "The KCD Universe",
+    "discover": "Discover",
     "dashboard": "Dashboard",
     "logout": "Logout",
     "profile": "Profile",
     "settings": "Settings"
   },
   "themes": {
-    "clearSky": "Clear Sky",
-    "clearSkyDesc": "Inspired by Google Play",
-    "nightShade": "Night Shade",
-    "nightShadeDesc": "Inspired by Netflix",
-    "corporate": "Corporate",
-    "corporateDesc": "Inspired by Salesforce",
-    "techie": "Techie",
-    "techieDesc": "Inspired by GitHub"
+    "aura": "Aura",
+    "auraDesc": "Classic editorial palette",
+    "atelier": "Atelier",
+    "atelierDesc": "Studio-inspired neutrals",
+    "ivory": "Ivory",
+    "ivoryDesc": "Soft light surfaces",
+    "noir": "Noir",
+    "noirDesc": "Moody sophistication"
   },
   "roles": {
-    "admin": "System Administrator",
-    "community_admin": "Community Administrator",
-    "moderator": "Community Moderator",
-    "brand": "Brand Account",
-    "premium": "Premium User",
-    "free": "Free User"
+    "admin": "System Admin",
+    "manager": "Platform Admin",
+    "moderator": "Platform Moderator",
+    "premium": "Premium Model",
+    "free": "Standard Model",
+    "demo": "Demo Profile"
   },
   "sections": {
     "featuredEvents": "Featured Events",
     "featuredCreators": "Featured Creators",
     "featuredTalents": "Featured Talents",
-    "welcome": "Welcome to KCD"
+    "welcome": "Welcome to KCD",
+    "spotlight": "In the spotlight",
+    "spotlightSubtitle": "A curated selection of rising and established talent.",
+    "events": "Our Events",
+    "eventsSubtitle": "Runways, showcases, and casting moments.",
+    "creators": "Our Creators",
+    "creatorsSubtitle": "Designers, art directors, and studios.",
+    "talents": "Our Talents",
+    "talentsSubtitle": "The faces shaping the next season.",
+    "universe": "The KCD Universe",
+    "universeCopy": "Beyond a portfolio, KCD connects you to curated castings, verified partners, and a lasting digital presence that evolves with your career.",
+    "universeCta": "Create my book",
+    "discoverTalents": "Discover our talents",
+    "discoverSubtitle": "Meet the faces shaping the next season of fashion.",
+    "discoverCta": "Explore the roster"
   },
   "labels": {
     "specializing": "Specializing in Fashion & Design",
     "event": "Event",
     "creator": "Creator",
-    "talent": "Talent"
+    "talent": "Talent",
+    "featuredRole": "Editorial & runway talent"
   },
   "cta": {
     "getStarted": "Get Started",
@@ -84,16 +109,16 @@
     "loginFailed": "Login failed. Please try again."
   },
   "analytics": {
-    "title": "Analytics & Insights"
+    "title": "Insights & Bookings"
   },
   "stats": {
-    "activeUsers": "Active Users",
+    "activeUsers": "Active Talents",
     "activeUsersChange": "↑ 12% this month",
-    "projects": "Projects",
+    "projects": "Castings",
     "projectsChange": "↑ 3% this month",
-    "uptime": "Uptime",
+    "uptime": "Availability",
     "uptimeStatus": "Excellent",
-    "userRating": "User Rating"
+    "userRating": "Partner Rating"
   },
   "settings": {
     "title": "Account Settings",
@@ -121,82 +146,77 @@
   },
   "admin": {
     "features": {
-      "privileges": "Platform Control & Privileges",
-      "privileges_desc": "Control the platform and grant user privileges",
-      "platformDashboard": "Platform Performance Dashboard",
-      "platformDashboard_desc": "Monitor performance metrics and uptime",
-      "userManager": "User Manager",
-      "userManager_desc": "Manage user interactions and accounts",
-      "services": "Service Subscription Manager",
-      "services_desc": "Manage all subscribed services",
-      "integrations": "Microservices Integrations",
-      "integrations_desc": "Authorize data exchanges with external services",
-      "aiRequests": "AI Request Intelligence",
-      "aiRequests_desc": "Capture and translate feature requests into AI prompts"
+      "governance": "Platform Governance",
+      "governance_desc": "Oversee policy, compliance, and access",
+      "ecosystem": "Ecosystem Oversight",
+      "ecosystem_desc": "Coordinate partners and editorial standards",
+      "quality": "Quality Assurance",
+      "quality_desc": "Protect the integrity of talent profiles",
+      "partners": "Partner Network",
+      "partners_desc": "Manage verified fashion partners",
+      "insights": "Strategic Insights",
+      "insights_desc": "Monitor platform performance and growth"
     }
   },
-  "community": {
+  "manager": {
     "features": {
-      "dashboard": "Community Dashboard",
-      "dashboard_desc": "Oversee community interactions",
-      "subscriptions": "Subscription Management",
-      "subscriptions_desc": "Manage each user's subscription",
-      "marketing": "Marketing Campaigns",
-      "marketing_desc": "Plan and monitor digital marketing campaigns",
-      "vetting": "Request Vetting",
-      "vetting_desc": "Vet each user feature/service request"
+      "castings": "Casting Orchestration",
+      "castings_desc": "Schedule and manage casting cycles",
+      "workflow": "Booking Workflow",
+      "workflow_desc": "Coordinate briefs, approvals, and placements",
+      "portfolios": "Portfolio Direction",
+      "portfolios_desc": "Guide the editorial presentation of talent",
+      "team": "Team Operations",
+      "team_desc": "Align scouts, stylists, and coordinators"
     }
   },
   "moderator": {
     "features": {
-      "journey": "Community Highlights Dashboard",
-      "journey_desc": "Track user engagement and experience",
-      "opportunities": "Opportunity Tracker",
-      "opportunities_desc": "Poll and track upcoming service opportunities",
-      "issues": "Issue Tracker",
-      "issues_desc": "Track pending user issues",
-      "qa": "Q&A Moderation",
-      "qa_desc": "Moderate platform feedback, complaints, requests",
-      "impersonate": "Impersonation Tool",
-      "impersonate_desc": "Review user experiences without admin access"
-    }
-  },
-  "brand": {
-    "features": {
-      "showcase": "Brand Showcase",
-      "showcase_desc": "Highlight brand content and campaigns",
-      "partnerships": "Partnership Hub",
-      "partnerships_desc": "Manage collaborations and co-branding",
-      "analytics": "Brand Analytics",
-      "analytics_desc": "Track brand performance and audience reach"
+      "review": "Content Review",
+      "review_desc": "Validate portfolios and editorials",
+      "rights": "Image Rights",
+      "rights_desc": "Track usage permissions and credits",
+      "safety": "Safety Standards",
+      "safety_desc": "Keep the ecosystem trusted",
+      "feedback": "Feedback Queue",
+      "feedback_desc": "Resolve reports and requests"
     }
   },
   "premium": {
     "features": {
-      "highlights": "Premium Highlights",
-      "highlights_desc": "Consume tailored platform highlights",
-      "topFive": "Top 5 Favorites",
-      "topFive_desc": "Access your top 5 modules and subscriptions",
-      "modules": "Premium Modules",
-      "modules_desc": "Engage with premium subscription modules",
-      "subscriptions": "Subscription Manager",
-      "subscriptions_desc": "Manage your active services",
-      "chatbox": "Member Chatbox",
-      "chatbox_desc": "Interact with other members",
-      "aiPrompt": "AI Feature Prompt",
-      "aiPrompt_desc": "Request new features routed for vetting"
+      "portfolio": "Portfolio Studio",
+      "portfolio_desc": "Curate editorials and lookbooks",
+      "castings": "Casting Invites",
+      "castings_desc": "Respond to exclusive briefs",
+      "bookings": "Bookings",
+      "bookings_desc": "Manage confirmed placements",
+      "analytics": "Performance Analytics",
+      "analytics_desc": "Track profile reach",
+      "visibility": "Visibility Boost",
+      "visibility_desc": "Priority discovery in searches"
     }
   },
   "free": {
     "features": {
-      "limited": "Limited Access",
-      "limited_desc": "Access selected modules on a time-limited basis"
+      "starter": "Starter Portfolio",
+      "starter_desc": "Launch your digital identity",
+      "applications": "Applications",
+      "applications_desc": "Track your casting submissions"
+    }
+  },
+  "demo": {
+    "features": {
+      "tour": "Guided Tour",
+      "tour_desc": "Explore a sample workspace",
+      "preview": "Portfolio Preview",
+      "preview_desc": "See how your book can look"
     }
   },
   "dashboard": {
-    "title": "KCD Platform",
+    "title": "KCD Atelier",
     "welcome": "Welcome",
-    "subtitle": "Experience Excellence in Digital Transformation",
+    "eyebrow": "Your workspace",
+    "subtitle": "Curate, manage, and elevate your modeling presence",
     "workspaces": "Workspaces",
     "analytics": "Analytics",
     "settings": "Settings",
@@ -206,5 +226,18 @@
     "theme": "Theme",
     "widgets": "Widgets",
     "signOut": "Sign Out"
+  },
+  "footer": {
+    "about": "KCD — The fashion modeling ecosystem.",
+    "aboutSub": "Digital portfolios, castings, and verified partners.",
+    "legal": "Legal",
+    "legalNotice": "Legal notice",
+    "terms": "Terms of use",
+    "privacy": "Privacy policy",
+    "social": "Social Media",
+    "faq": "FAQ",
+    "faqLink": "Frequently asked questions",
+    "booking": "How to book",
+    "services": "Our services"
   }
 }

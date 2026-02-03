@@ -70,3 +70,34 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+class ChatMessageBase(BaseModel):
+    channel: str = "community"
+    content: str
+
+
+class ChatMessageCreate(ChatMessageBase):
+    pass
+
+
+class ChatMessageResponse(ChatMessageBase):
+    id: int
+    user_id: int
+    user_name: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class MediaAssetResponse(BaseModel):
+    id: int
+    user_id: int
+    file_url: str
+    file_type: str
+    caption: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

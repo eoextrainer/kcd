@@ -8,11 +8,10 @@ export default function SplashScreen({ onComplete }) {
 
   const splashVideos = useMemo(
     () => [
-      'https://www.youtube.com/watch?v=7KleXMtVBSs',
-      'https://www.youtube.com/watch?v=m5FPAvHLEVM',
-      'https://www.youtube.com/watch?v=5aFWNrRG7qw',
-      'https://www.youtube.com/watch?v=J1GCDcbYIRI',
-      'https://www.youtube.com/watch?v=WK5GbfGULpk',
+      'https://www.youtube.com/watch?v=HgTSS7Lgw3M&pp=ygUYZmFzaGlvbiBtb2RlbGxpbmcgYWdlbmN52AYY',
+      'https://www.youtube.com/watch?v=yo6GklFH2sg&pp=ygUYZmFzaGlvbiBtb2RlbGxpbmcgYWdlbmN5',
+      'https://www.youtube.com/watch?v=SdSSPF1S-Uc&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
+      'https://www.youtube.com/watch?v=Wr4w5i1xFEo&pp=ygUeZmFzaGlvbiBtb2RlbGxpbmcgZmFzaGlvbiB3ZWVr',
     ],
     []
   );
@@ -40,10 +39,8 @@ export default function SplashScreen({ onComplete }) {
     const randomVideo = splashVideos[Math.floor(Math.random() * splashVideos.length)];
     setSelectedVideo(getEmbedUrl(randomVideo));
 
-    // Video duration: 10 seconds
     const timer = setTimeout(() => {
       setFadeOut(true);
-      // Wait for fade animation to complete before calling onComplete
       setTimeout(() => {
         onComplete?.();
       }, 500);
@@ -61,31 +58,26 @@ export default function SplashScreen({ onComplete }) {
 
   return (
     <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
-      {/* YouTube Video Background */}
+      <div className="noise"></div>
       <div className="splash-video-container">
         <iframe
           className="splash-video"
           src={selectedVideo}
-          title="Paris Fashion Week 2026 Runway"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          title="KCD Splash"
+          allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
         ></iframe>
       </div>
 
-      {/* Overlay with gradient for elegance */}
       <div className="splash-overlay"></div>
 
-      {/* Branding */}
-      <div className="splash-branding">
-        <div className="splash-logo">
-          <h1>KCD</h1>
-          <p>{t('app.title')}</p>
-        </div>
+      <div className="splash-content">
+        <h1 className="splash-title">KCD</h1>
+        <p className="splash-subtitle">{t('app.title')}</p>
+        <button type="button" className="splash-skip" onClick={handleSkip}>
+          {t('splash.enter')}
+        </button>
       </div>
-
-      <button type="button" className="splash-skip" onClick={handleSkip}>
-        {t('splash.skip')}
-      </button>
 
       {/* Timer indicator */}
       <div className="splash-timer">
