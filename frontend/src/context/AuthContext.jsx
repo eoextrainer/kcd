@@ -4,6 +4,7 @@
  */
 
 import { createContext, useState, useContext, useEffect } from 'react';
+import { getApiBaseUrl } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -30,7 +31,8 @@ export function AuthProvider({ children }) {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/v1/auth/login`, {
+      const apiBaseUrl = getApiBaseUrl();
+      const response = await fetch(`${apiBaseUrl}/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

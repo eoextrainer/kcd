@@ -3,10 +3,21 @@ const normalizeBaseUrl = (url) => {
   return url.endsWith('/') ? url.slice(0, -1) : url;
 };
 
+const normalizeApiBase = (url) => {
+  if (!url) return '';
+  if (url.endsWith('/api/v1')) {
+    return url.slice(0, -3);
+  }
+  if (url.endsWith('/v1')) {
+    return url.slice(0, -3);
+  }
+  return url;
+};
+
 export const getApiBaseUrl = () => {
   const envBase = import.meta.env.VITE_API_BASE_URL;
   if (envBase) {
-    return normalizeBaseUrl(envBase);
+    return normalizeApiBase(normalizeBaseUrl(envBase));
   }
 
   return '/api';
