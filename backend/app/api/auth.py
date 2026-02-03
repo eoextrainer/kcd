@@ -2,7 +2,7 @@
 Authentication routes for user login and token management
 """
 from datetime import timedelta, datetime
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
@@ -10,6 +10,16 @@ from app.schemas.user_schema import UserLogin, TokenResponse, UserResponse
 from app.services.user_service import UserService
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
+
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+}
+
+@router.options("/login")
+async def login_options() -> Response:
+    return Response(status_code=204, headers=CORS_HEADERS)
 
 @router.post("/login", response_model=TokenResponse)
 async def login(
