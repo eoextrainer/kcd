@@ -4,7 +4,7 @@
  */
 
 import { createContext, useState, useContext, useEffect } from 'react';
-import { getApiBaseUrl } from '../config/api';
+import { getApiBaseCandidates } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -31,21 +31,37 @@ export function AuthProvider({ children }) {
       setLoading(true);
       setError(null);
 
-      const apiBaseUrl = getApiBaseUrl();
-      const response = await fetch(`${apiBaseUrl}/v1/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const candidates = getApiBaseCandidates();
+      let response;
+      let data;
+      let lastError;
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
+      for (const base of candidates) {
+        try {
+          response = await fetch(`${base}/v1/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          data = await response.json().catch(() => null);
+
+          if (response.ok && data) {
+            lastError = null;
+            break;
+          }
+
+          lastError = new Error(data?.detail || 'Login failed');
+        } catch (fetchError) {
+          lastError = fetchError;
+        }
       }
 
-      const data = await response.json();
+      if (lastError) {
+        throw lastError;
+      }
       
       // Store token and user
       localStorage.setItem('access_token', data.access_token);

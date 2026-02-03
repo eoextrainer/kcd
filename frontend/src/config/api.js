@@ -33,3 +33,19 @@ export const getApiBaseUrl = () => {
 
   return '/api';
 };
+
+export const getApiBaseCandidates = () => {
+  const base = getApiBaseUrl();
+  const candidates = new Set();
+  if (base) {
+    candidates.add(base);
+  }
+
+  if (base.endsWith('/api')) {
+    candidates.add(base.slice(0, -4));
+  } else if (!base.endsWith('/api')) {
+    candidates.add(`${base}/api`);
+  }
+
+  return Array.from(candidates).filter(Boolean);
+};

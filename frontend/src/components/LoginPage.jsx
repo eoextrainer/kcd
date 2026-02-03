@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './LoginPage.css';
-import { getApiBaseUrl } from '../config/api';
+import { getApiBaseCandidates } from '../config/api';
 
 export default function LoginPage({ onLogin }) {
   const { t } = useTranslation();
@@ -38,26 +38,39 @@ export default function LoginPage({ onLogin }) {
     setLoading(true);
 
     try {
-      const apiBaseUrl = getApiBaseUrl();
-      const response = await fetch(`${apiBaseUrl}/v1/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      const candidates = getApiBaseCandidates();
+      let response;
+      let data;
+      let lastError;
 
-      const data = await safeParseJson(response);
+      for (const base of candidates) {
+        try {
+          response = await fetch(`${base}/v1/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          });
 
-      if (!response.ok) {
-        throw new Error(data?.detail || t('errors.invalidCredentials'));
+          data = await safeParseJson(response);
+
+          if (response.ok && data) {
+            lastError = null;
+            break;
+          }
+
+          lastError = new Error(data?.detail || t('errors.invalidCredentials'));
+        } catch (fetchError) {
+          lastError = fetchError;
+        }
       }
 
-      if (!data) {
-        throw new Error(t('errors.loginFailed'));
+      if (lastError) {
+        throw lastError;
       }
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
@@ -86,26 +99,39 @@ export default function LoginPage({ onLogin }) {
     setError('');
     setLoading(true);
     try {
-      const apiBaseUrl = getApiBaseUrl();
-      const response = await fetch(`${apiBaseUrl}/v1/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: 'demo@kcd-agency.com',
-          password: 'demo123',
-        }),
-      });
+      const candidates = getApiBaseCandidates();
+      let response;
+      let data;
+      let lastError;
 
-      const data = await safeParseJson(response);
+      for (const base of candidates) {
+        try {
+          response = await fetch(`${base}/v1/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: 'demo@kcd-agency.com',
+              password: 'demo123',
+            }),
+          });
 
-      if (!response.ok) {
-        throw new Error(data?.detail || t('errors.invalidCredentials'));
+          data = await safeParseJson(response);
+
+          if (response.ok && data) {
+            lastError = null;
+            break;
+          }
+
+          lastError = new Error(data?.detail || t('errors.invalidCredentials'));
+        } catch (fetchError) {
+          lastError = fetchError;
+        }
       }
 
-      if (!data) {
-        throw new Error(t('errors.loginFailed'));
+      if (lastError) {
+        throw lastError;
       }
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
