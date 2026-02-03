@@ -25,9 +25,9 @@ services:
     env: static
     region: oregon
     plan: free
-    rootDir: frontend
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
+    rootDir: .
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
         value: https://kcd-api-jf14.onrender.com
