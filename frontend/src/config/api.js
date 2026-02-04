@@ -19,11 +19,19 @@ const normalizeApiBase = (url) => {
 
 const DEFAULT_RENDER_BACKEND = 'https://kcd-backend-xeak.onrender.com';
 const FALLBACK_RENDER_BACKENDS = [DEFAULT_RENDER_BACKEND];
+const BLOCKED_API_HOSTS = new Set([
+  'https://kcd-api-jf14.onrender.com',
+  'http://kcd-api-jf14.onrender.com',
+]);
 
 const getStoredApiBase = () => {
   if (typeof window === 'undefined') return '';
   try {
-    return normalizeApiBase(normalizeBaseUrl(localStorage.getItem('api_base')));
+    const stored = normalizeApiBase(normalizeBaseUrl(localStorage.getItem('api_base')));
+    if (stored && !BLOCKED_API_HOSTS.has(stored)) {
+      return stored;
+    }
+    return '';
   } catch (err) {
     return '';
   }
@@ -37,7 +45,10 @@ export const getApiBaseUrl = () => {
 
   const envBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
   if (envBase) {
-    return normalizeApiBase(normalizeBaseUrl(envBase));
+    const normalized = normalizeApiBase(normalizeBaseUrl(envBase));
+    if (!BLOCKED_API_HOSTS.has(normalized)) {
+      return normalized;
+    }
   }
 
   if (typeof window !== 'undefined') {
@@ -59,15 +70,21 @@ export const getApiBaseCandidates = () => {
   const storedBase = getStoredApiBase();
 
   [storedBase, base, ...FALLBACK_RENDER_BACKENDS].forEach((item) => {
-    if (item) {
+    if (item && !BLOCKED_API_HOSTS.has(item)) {
       candidates.add(item);
     }
   });
 
   if (base.endsWith('/api')) {
-    candidates.add(base.slice(0, -4));
+    const trimmed = base.slice(0, -4);
+    if (!BLOCKED_API_HOSTS.has(trimmed)) {
+      candidates.add(trimmed);
+    }
   } else if (!base.endsWith('/api')) {
-    candidates.add(`${base}/api`);
+    const withApi = `${base}/api`;
+    if (!BLOCKED_API_HOSTS.has(withApi)) {
+      candidates.add(withApi);
+    }
   }
 
   return Array.from(candidates).filter(Boolean);
