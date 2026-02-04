@@ -17,8 +17,10 @@ const normalizeApiBase = (url) => {
   return `${url}/api`;
 };
 
+const DEFAULT_RENDER_BACKEND = 'https://kcd-backend-xeak.onrender.com';
+
 export const getApiBaseUrl = () => {
-  const envBase = import.meta.env.VITE_API_BASE_URL;
+  const envBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
   if (envBase) {
     return normalizeApiBase(normalizeBaseUrl(envBase));
   }
@@ -26,8 +28,7 @@ export const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
     const origin = window.location.origin;
     if (origin.includes('kcd-frontend')) {
-      const inferred = origin.replace('kcd-frontend', 'kcd-api');
-      return normalizeApiBase(normalizeBaseUrl(inferred));
+      return normalizeApiBase(normalizeBaseUrl(DEFAULT_RENDER_BACKEND));
     }
   }
 
