@@ -18,8 +18,23 @@ const normalizeApiBase = (url) => {
 };
 
 const DEFAULT_RENDER_BACKEND = 'https://kcd-backend-xeak.onrender.com';
+const FALLBACK_RENDER_BACKENDS = [DEFAULT_RENDER_BACKEND];
+
+const getStoredApiBase = () => {
+  if (typeof window === 'undefined') return '';
+  try {
+    return normalizeApiBase(normalizeBaseUrl(localStorage.getItem('api_base')));
+  } catch (err) {
+    return '';
+  }
+};
 
 export const getApiBaseUrl = () => {
+  const storedBase = getStoredApiBase();
+  if (storedBase) {
+    return storedBase;
+  }
+
   const envBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
   if (envBase) {
     return normalizeApiBase(normalizeBaseUrl(envBase));
@@ -30,6 +45,9 @@ export const getApiBaseUrl = () => {
     if (origin.includes('kcd-frontend')) {
       return normalizeApiBase(normalizeBaseUrl(DEFAULT_RENDER_BACKEND));
     }
+    if (origin.includes('onrender.com')) {
+      return normalizeApiBase(normalizeBaseUrl(DEFAULT_RENDER_BACKEND));
+    }
   }
 
   return '/api';
@@ -38,9 +56,13 @@ export const getApiBaseUrl = () => {
 export const getApiBaseCandidates = () => {
   const base = getApiBaseUrl();
   const candidates = new Set();
-  if (base) {
-    candidates.add(base);
-  }
+  const storedBase = getStoredApiBase();
+
+  [storedBase, base, ...FALLBACK_RENDER_BACKENDS].forEach((item) => {
+    if (item) {
+      candidates.add(item);
+    }
+  });
 
   if (base.endsWith('/api')) {
     candidates.add(base.slice(0, -4));

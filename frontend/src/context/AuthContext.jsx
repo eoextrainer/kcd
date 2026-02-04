@@ -35,6 +35,7 @@ export function AuthProvider({ children }) {
       let response;
       let data;
       let lastError;
+      let selectedBase;
 
       for (const base of candidates) {
         try {
@@ -50,6 +51,7 @@ export function AuthProvider({ children }) {
 
           if (response.ok && data) {
             lastError = null;
+            selectedBase = base;
             break;
           }
 
@@ -63,6 +65,9 @@ export function AuthProvider({ children }) {
         throw lastError;
       }
       
+      if (selectedBase) {
+        localStorage.setItem('api_base', selectedBase);
+      }
       // Store token and user
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));

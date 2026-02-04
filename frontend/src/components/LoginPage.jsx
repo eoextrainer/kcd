@@ -42,6 +42,7 @@ export default function LoginPage({ onLogin }) {
       let response;
       let data;
       let lastError;
+        let selectedBase;
 
       for (const base of candidates) {
         try {
@@ -60,6 +61,7 @@ export default function LoginPage({ onLogin }) {
 
           if (response.ok && data) {
             lastError = null;
+            selectedBase = base;
             break;
           }
 
@@ -72,6 +74,9 @@ export default function LoginPage({ onLogin }) {
       if (lastError) {
         throw lastError;
       }
+        if (selectedBase) {
+          localStorage.setItem('api_base', selectedBase);
+        }
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -103,6 +108,7 @@ export default function LoginPage({ onLogin }) {
       let response;
       let data;
       let lastError;
+        let selectedBase;
 
       for (const base of candidates) {
         try {
@@ -121,6 +127,7 @@ export default function LoginPage({ onLogin }) {
 
           if (response.ok && data) {
             lastError = null;
+            selectedBase = base;
             break;
           }
 
@@ -133,6 +140,9 @@ export default function LoginPage({ onLogin }) {
       if (lastError) {
         throw lastError;
       }
+        if (selectedBase) {
+          localStorage.setItem('api_base', selectedBase);
+        }
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
