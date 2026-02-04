@@ -30,4 +30,4 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://kcd-api-jf14.onrender.com
+        value: https://kcd-backend-xeak.onrender.com
