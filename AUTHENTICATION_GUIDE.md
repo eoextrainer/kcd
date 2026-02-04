@@ -114,54 +114,47 @@ Script to populate the database with test users and workspaces.
 
 **Test Users Created:**
 
-1. **Admin User**
-   - Email: `admin@kcd-agency.com`
-   - Password: `admin123456`
-   - Role: `admin`
-   - Tier: `brand`
-   - Workspace: Admin Dashboard (system_health, analytics, moderation, security)
+1. **Sys Admin**
+  - Email: `admin@kcd-agency.com`
+  - Password: `admin123`
+  - Role: `admin`
+  - Tier: `admin`
+  - Workspace: System Atelier (platform_health, talent_registry, casting_pipeline, compliance_review, risk_alerts, partner_access)
 
-2. **Community Admin**
-   - Email: `community.admin@kcd-agency.com`
-   - Password: `comm_admin123`
-   - Role: `community_admin`
-   - Tier: `premium`
-   - Workspace: Community Management (moderation_queue, user_management, stats)
+2. **Platform Admin**
+  - Email: `manager@kcd-agency.com`
+  - Password: `manager123`
+  - Role: `manager`
+  - Tier: `manager`
+  - Workspace: Platform Direction (portfolio_approvals, booking_flow, client_briefs, content_standards, team_overview)
 
 3. **Moderator**
-   - Email: `moderator@kcd-agency.com`
-   - Password: `mod123456`
-   - Role: `moderator`
-   - Tier: `premium`
-   - Workspace: Moderation Center (pending_reviews, reported_content, warnings)
+  - Email: `moderator@kcd-agency.com`
+  - Password: `moderator123`
+  - Role: `moderator`
+  - Tier: `moderator`
+  - Workspace: Moderation Studio (content_review, flagged_profiles, photo_rights, feedback_queue)
 
-4. **Brand Account**
-   - Email: `brand@kcd-agency.com`
-   - Password: `brand123456`
-   - Role: `brand`
-   - Tier: `brand`
-   - Workspace: Brand Portal (brand_verification, analytics, content_tools)
+4. **Premium User**
+  - Email: `user1@kcd-agency.com`
+  - Password: `user1premium`
+  - Role: `user`
+  - Tier: `premium`
+  - Workspace: Premium Model Studio (portfolio_editor, casting_invites, brand_deals, analytics, availability_calendar)
 
-5. **Premium Creator**
-   - Email: `premium@kcd-agency.com`
-   - Password: `premium123`
-   - Role: `user`
-   - Tier: `premium`
-   - Workspace: Creator Studio (netflix theme, content_feed, analytics)
+5. **Normal User**
+  - Email: `user2@kcd-agency.com`
+  - Password: `user2normal`
+  - Role: `user`
+  - Tier: `free`
+  - Workspace: Model Workspace (portfolio_overview, applications, messages, notifications)
 
-6. **Free Tier User**
-   - Email: `free@kcd-agency.com`
-   - Password: `free123456`
-   - Role: `user`
-   - Tier: `free`
-   - Workspace: Creator Studio (basic widgets)
-
-7. **Guest User**
-   - Email: `guest@kcd-agency.com`
-   - Password: `guest123456`
-   - Role: `guest`
-   - Tier: `free`
-   - Workspace: Explore (discover_feed, trending, recommendations)
+6. **Demo User**
+  - Email: `demo@kcd-agency.com`
+  - Password: `demo123`
+  - Role: `user`
+  - Tier: `demo`
+  - Workspace: Demo Atelier (guided_tour, sample_portfolio, sample_castings)
 
 ## Running the System
 
@@ -197,7 +190,7 @@ curl -X POST "http://localhost:8000/api/v1/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@kcd-agency.com",
-    "password": "admin123456"
+    "password": "admin123"
   }'
 ```
 
