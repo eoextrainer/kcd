@@ -23,7 +23,11 @@ TAG_NAME="${2:-stable-$(date +%Y%m%d-%H%M)}"
 
 cd "$ROOT_DIR"
 
-git add -A
+if [[ "${RENDER_DEPLOY_GIT_ADD_ALL:-false}" == "true" ]]; then
+  git add -A
+else
+  git add -u
+fi
 
 git reset -- .render-deploy.env >/dev/null 2>&1 || true
 
@@ -35,7 +39,7 @@ git tag -f "$TAG_NAME"
 
 git push
 
-git push origin "$TAG_NAME"
+git push --force origin "$TAG_NAME"
 
 bash "$ROOT_DIR/scripts/deploy_render_local.sh"
 
