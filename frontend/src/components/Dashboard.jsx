@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Dashboard.css';
 import { getApiBaseUrl } from '../config/api';
+import PremiumWorkspaceTab from './PremiumWorkspaceTab';
 
 export default function Dashboard({ user, onLogout }) {
   const { t } = useTranslation();
@@ -430,6 +431,14 @@ export default function Dashboard({ user, onLogout }) {
               📸 Portfolio Book
             </button>
           )}
+          {isUserTier && (
+            <button
+              className={`nav-tab ${activeTab === 'premium-workspace' ? 'active' : ''}`}
+              onClick={() => setActiveTab('premium-workspace')}
+            >
+              ✨ Workspace Premium
+            </button>
+          )}
           <button
             className={`nav-tab ${activeTab === 'analytics' ? 'active' : ''}`}
             onClick={() => setActiveTab('analytics')}
@@ -557,6 +566,12 @@ export default function Dashboard({ user, onLogout }) {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {activeTab === 'premium-workspace' && isUserTier && (
+          <div className="premium-workspace-section">
+            <PremiumWorkspaceTab />
           </div>
         )}
 

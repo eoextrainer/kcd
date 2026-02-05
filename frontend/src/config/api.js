@@ -37,7 +37,50 @@ const getStoredApiBase = () => {
   }
 };
 
+const isLocalhost = () => {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname;
+  return host === 'localhost' || host === '127.0.0.1';
+};
+
+const getLockedApiBase = () => {
+  const envBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+  if (!envBase) return '';
+  const normalized = normalizeApiBase(normalizeBaseUrl(envBase));
+  if (normalized && !BLOCKED_API_HOSTS.has(normalized)) {
+    return normalized;
+  }
+  return '';
+};
+
+export const isApiBaseLocked = () => {
+  const lockFlag = import.meta.env.VITE_API_BASE_LOCKED;
+  if (lockFlag && String(lockFlag).toLowerCase() === 'true') {
+    return true;
+  }
+  const envBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+  return Boolean(envBase) && !isLocalhost();
+};
+
 export const getApiBaseUrl = () => {
+  if (isLocalhost()) {
+    const envBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+    if (envBase && (envBase.includes('localhost') || envBase.includes('127.0.0.1'))) {
+      const normalized = normalizeApiBase(normalizeBaseUrl(envBase));
+      if (!BLOCKED_API_HOSTS.has(normalized)) {
+        return normalized;
+      }
+    }
+    return '/api';
+  }
+
+  if (isApiBaseLocked()) {
+    const lockedBase = getLockedApiBase();
+    if (lockedBase) {
+      return lockedBase;
+    }
+  }
+
   const storedBase = getStoredApiBase();
   if (storedBase) {
     return storedBase;
@@ -66,6 +109,11 @@ export const getApiBaseUrl = () => {
 
 export const getApiBaseCandidates = () => {
   const base = getApiBaseUrl();
+
+  if (isApiBaseLocked()) {
+    return base ? [base] : [];
+  }
+
   const candidates = new Set();
   const storedBase = getStoredApiBase();
 

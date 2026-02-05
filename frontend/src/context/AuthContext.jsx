@@ -4,7 +4,7 @@
  */
 
 import { createContext, useState, useContext, useEffect } from 'react';
-import { getApiBaseCandidates } from '../config/api';
+import { getApiBaseCandidates, isApiBaseLocked } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -65,7 +65,7 @@ export function AuthProvider({ children }) {
         throw lastError;
       }
       
-      if (selectedBase) {
+      if (selectedBase && !isApiBaseLocked()) {
         localStorage.setItem('api_base', selectedBase);
       }
       // Store token and user

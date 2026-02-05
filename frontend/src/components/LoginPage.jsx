@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './LoginPage.css';
-import { getApiBaseCandidates } from '../config/api';
+import { getApiBaseCandidates, isApiBaseLocked } from '../config/api';
 
 export default function LoginPage({ onLogin }) {
   const { t } = useTranslation();
@@ -74,9 +74,9 @@ export default function LoginPage({ onLogin }) {
       if (lastError) {
         throw lastError;
       }
-        if (selectedBase) {
-          localStorage.setItem('api_base', selectedBase);
-        }
+      if (selectedBase && !isApiBaseLocked()) {
+        localStorage.setItem('api_base', selectedBase);
+      }
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -140,9 +140,9 @@ export default function LoginPage({ onLogin }) {
       if (lastError) {
         throw lastError;
       }
-        if (selectedBase) {
-          localStorage.setItem('api_base', selectedBase);
-        }
+      if (selectedBase && !isApiBaseLocked()) {
+        localStorage.setItem('api_base', selectedBase);
+      }
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
